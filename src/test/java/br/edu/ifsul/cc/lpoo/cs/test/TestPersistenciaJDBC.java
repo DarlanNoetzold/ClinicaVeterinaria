@@ -1,8 +1,6 @@
 package br.edu.ifsul.cc.lpoo.cs.test;
 
-import br.edu.ifsul.cc.lpoo.clinicaVet.model.dao.PersistenciaJDBC;
-import java.util.List;
-import org.junit.Test;
+import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 
 public class TestPersistenciaJDBC {
 
