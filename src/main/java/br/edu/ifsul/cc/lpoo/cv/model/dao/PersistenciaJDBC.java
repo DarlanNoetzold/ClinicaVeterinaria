@@ -52,14 +52,14 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     @Override
     public Object find(Class c, Object id) throws Exception {
 
-        if(c == Consulta.class){
+        if (c == Consulta.class) {
 
             PreparedStatement ps = this.con.prepareStatement("select id, medico_id, pet_id from tb_consulta where id = ? ");
             ps.setInt(1, Integer.parseInt(id.toString()));
 
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
 
                 Consulta con = new Consulta();
                 con.setId(rs.getInt("id"));
@@ -71,11 +71,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 return con;
             }
 
-        }else if(c == Medico.class){
+        } else if (c == Medico.class) {
             PreparedStatement ps = this.con.prepareStatement("select numero_csmv, cpf from tb_medico where id = ? ");
             ps.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rsMedico = ps.executeQuery();
-            if(rsMedico.next()){
+            if (rsMedico.next()) {
                 Medico m = new Medico();
                 m.setNumero_crmv(rsMedico.getString("numero_csmv"));
                 m.setCpf(rsMedico.getString("cpf"));
@@ -84,11 +84,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 return m;
             }
-        }else if (c == Pet.class){
+        } else if (c == Pet.class) {
             PreparedStatement ps = this.con.prepareStatement("select id, data_nascimento, nome, observacao, cliente_id, raca_id from tb_pet where id = ? ");
             ps.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 Pet p = new Pet();
                 p.setId(rs.getInt("id"));
                 Calendar dtU = Calendar.getInstance();
@@ -104,11 +104,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 return p;
             }
 
-        }else if (c == Cliente.class){
+        } else if (c == Cliente.class) {
             PreparedStatement ps = this.con.prepareStatement("select cpf, data_ultima_visita from tb_cliente where id = ? ");
             ps.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 Cliente cl = new Cliente();
                 Calendar dtU = Calendar.getInstance();
                 dtU.setTimeInMillis(rs.getDate("data_ultima_visita").getTime());
@@ -119,11 +119,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 return cl;
             }
-        }else if (c == Raca.class){
+        } else if (c == Raca.class) {
             PreparedStatement ps = this.con.prepareStatement("select id, nome, especie_id from tb_raca where id = ? ");
             ps.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 Raca ra = new Raca();
                 ra.setId(rs.getInt("id"));
                 ra.setNome(rs.getString("nome"));
@@ -133,11 +133,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 return ra;
             }
-        }else if (c == Especie.class){
+        } else if (c == Especie.class) {
             PreparedStatement ps = this.con.prepareStatement("select id, nome, especie_id from tb_raca where id = ? ");
             ps.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 Especie esp = new Especie();
                 esp.setId(rs.getInt("id"));
                 esp.setNome(rs.getString("nome"));
@@ -146,11 +146,22 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 return esp;
             }
-        }
+        } else if (c == Receita.class) {
+            PreparedStatement ps = this.con.prepareStatement("select id, orientacao, consulta_id where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Receita rec = new Receita();
+                rec.setId(rs.getInt("id"));
+                rec.setConsulta((Consulta) find(Consulta.class, rs.getInt("consulta_id")));
 
+                ps.close();
+
+                return rec;
+            }
+        }
         return null;
     }
-
     @Override
     public void persist(Object o) throws Exception {
 
