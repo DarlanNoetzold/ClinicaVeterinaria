@@ -1,8 +1,9 @@
 package br.edu.ifsul.cc.lpoo.cv.model.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import br.edu.ifsul.cc.lpoo.cv.model.*;
+
+import java.sql.*;
+import java.util.Calendar;
 
 
 public class PersistenciaJDBC implements InterfacePersistencia {
@@ -50,7 +51,103 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     @Override
     public Object find(Class c, Object id) throws Exception {
-        
+
+        if(c == Consulta.class){
+
+            PreparedStatement ps = this.con.prepareStatement("select id, medico_id, pet_id from tb_consulta where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+
+                Consulta con = new Consulta();
+                con.setId(rs.getInt("id"));
+                con.setMedico((Medico) find(Medico.class, rs.getInt("medico_id")));
+                con.setPet((Pet) find(Pet.class, rs.getInt("pet_id")));
+
+                ps.close();
+
+                return con;
+            }
+
+        }else if(c == Medico.class){
+            PreparedStatement ps = this.con.prepareStatement("select numero_csmv, cpf from tb_medico where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rsMedico = ps.executeQuery();
+            if(rsMedico.next()){
+                Medico m = new Medico();
+                m.setNumero_crmv(rsMedico.getString("numero_csmv"));
+                m.setCpf(rsMedico.getString("cpf"));
+
+                ps.close();
+
+                return m;
+            }
+        }else if (c == Pet.class){
+            PreparedStatement ps = this.con.prepareStatement("select id, data_nascimento, nome, observacao, cliente_id, raca_id from tb_pet where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Pet p = new Pet();
+                p.setId(rs.getInt("id"));
+                Calendar dtU = Calendar.getInstance();
+                dtU.setTimeInMillis(rs.getDate("data_nascimento").getTime());
+                p.setData_nascimento(dtU);
+                p.setNome(rs.getString("nome"));
+                p.setObservacao(rs.getString("observacao"));
+                p.setCliente((Cliente) find(Cliente.class, rs.getInt("cliente_id")));
+                p.setRaca((Raca) find(Raca.class, rs.getInt("raca_id")));
+
+                ps.close();
+
+                return p;
+            }
+
+        }else if (c == Cliente.class){
+            PreparedStatement ps = this.con.prepareStatement("select cpf, data_ultima_visita from tb_cliente where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Cliente cl = new Cliente();
+                Calendar dtU = Calendar.getInstance();
+                dtU.setTimeInMillis(rs.getDate("data_ultima_visita").getTime());
+                cl.setData_ultima_visita(dtU);
+                cl.setCpf(rs.getString("cpf"));
+
+                ps.close();
+
+                return cl;
+            }
+        }else if (c == Raca.class){
+            PreparedStatement ps = this.con.prepareStatement("select id, nome, especie_id from tb_raca where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Raca ra = new Raca();
+                ra.setId(rs.getInt("id"));
+                ra.setNome(rs.getString("nome"));
+                ra.setEspecie((Especie) find(Especie.class, rs.getInt("especie_id")));
+
+                ps.close();
+
+                return ra;
+            }
+        }else if (c == Especie.class){
+            PreparedStatement ps = this.con.prepareStatement("select id, nome, especie_id from tb_raca where id = ? ");
+            ps.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Especie esp = new Especie();
+                esp.setId(rs.getInt("id"));
+                esp.setNome(rs.getString("nome"));
+
+                ps.close();
+
+                return esp;
+            }
+        }
+
         return null;
     }
 
