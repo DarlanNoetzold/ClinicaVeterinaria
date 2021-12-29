@@ -50,7 +50,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     @Override
     public Object find(Class c, Object id) throws Exception {
-
+        
         return null;
     }
 

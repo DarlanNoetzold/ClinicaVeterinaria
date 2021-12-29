@@ -1,10 +1,11 @@
 package br.edu.ifsul.cc.lpoo.cs.test;
 
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
+import org.junit.Test;
 
 public class TestPersistenciaJDBC {
 
-    //@Test
+    @Test
     public void testConexao() throws Exception {
 
         PersistenciaJDBC persistencia = new PersistenciaJDBC();
@@ -18,5 +19,8 @@ public class TestPersistenciaJDBC {
         }
 
     }
+
+
+
 
 }
