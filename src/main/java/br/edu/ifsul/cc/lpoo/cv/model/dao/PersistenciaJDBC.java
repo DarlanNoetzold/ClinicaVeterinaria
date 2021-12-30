@@ -165,6 +165,54 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     @Override
     public void persist(Object o) throws Exception {
 
+        if(o instanceof Consulta){
+
+            Consulta c = (Consulta) o;
+
+            if(c.getId() == null){
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_consulta "
+                                                                                + "(id, medico_id, pet_id) values "
+                                                                                + "(nextval('seq_endereco_id'), ?, ?)", new String[]{"id"});
+
+                ps.setString(1, c.getMedico().getCpf());
+                ps.setInt(2, c.getPet().getId());
+
+                ps.executeUpdate();
+
+                ResultSet rs = ps.getGeneratedKeys();
+
+                if (rs.next()) {
+                    c.setId(rs.getInt(1));
+                }
+            }else{
+
+                //update.
+                PreparedStatement ps = this.con.prepareStatement("update tb_consulta set "
+                        + "medico_id = ?, "
+                        + "pet_id = ? "
+                        + "where id = ?");
+                ps.setString(1, c.getMedico().getCpf());
+                ps.setInt(2, c.getPet().getId());
+                ps.setInt(3, c.getId());
+
+                ps.execute();//executa o comando.
+            }
+
+
+        }else if (o instanceof Receita){
+
+            Receita r = (Receita) o; //converter o para o e que é do tipo Endereco
+            if(r.getId() == null){
+
+                //insert.
+
+            }else{
+
+                //update.
+            }
+
+        }
     }
 
     @Override
