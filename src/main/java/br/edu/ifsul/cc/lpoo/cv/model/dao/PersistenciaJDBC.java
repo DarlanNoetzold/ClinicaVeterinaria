@@ -3,7 +3,9 @@ package br.edu.ifsul.cc.lpoo.cv.model.dao;
 import br.edu.ifsul.cc.lpoo.cv.model.*;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class PersistenciaJDBC implements InterfacePersistencia {
@@ -153,6 +155,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             if (rs.next()) {
                 Receita rec = new Receita();
                 rec.setId(rs.getInt("id"));
+                rec.setOrientacao((rs.getString("orientacao")));
                 rec.setConsulta((Consulta) find(Consulta.class, rs.getInt("consulta_id")));
 
                 ps.close();
@@ -238,4 +241,29 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     public void remover(Object o) throws Exception {
 
     }
+
+    public List<Receita> listReceitasDeConsulta(Object id) throws Exception {
+
+        List<Receita> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("select id, orientacao, consulta_id from tb_consulta where consulta_id = ?");
+        ps.setInt(1, Integer.parseInt(id.toString()));
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList<>();
+        while(rs.next()){
+
+            Receita rec = new Receita();
+            rec.setId(rs.getInt("id"));
+            rec.setOrientacao(rs.getString("orientacao"));
+            rec.setConsulta((Consulta) find(Consulta.class, rs.getInt("consulta_id")));
+
+            lista.add(rec);
+
+        }
+        return lista;
+
+    }
+
 }
