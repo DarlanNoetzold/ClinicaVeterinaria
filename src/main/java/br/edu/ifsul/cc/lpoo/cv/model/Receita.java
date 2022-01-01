@@ -16,7 +16,7 @@ public class Receita {
     private String orientacao;
 
     @ManyToOne
-    @JoinColumn(name = "consulta_id", nullable = false)
+    @JoinColumn(name = "consulta_id", nullable = true)
     private Consulta consulta;
 
     @ManyToMany

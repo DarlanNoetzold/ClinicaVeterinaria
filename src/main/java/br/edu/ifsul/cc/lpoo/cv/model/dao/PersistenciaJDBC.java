@@ -240,7 +240,25 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     @Override
     public void remover(Object o) throws Exception {
+        if(o instanceof Consulta){
 
+            Consulta c = (Consulta) o;
+            PreparedStatement ps1 = this.con.prepareStatement("update tb_receita set consulta_id=Null where consulta_id = ?");
+            ps1.setInt(1, c.getId());
+            ps1.execute();
+
+            PreparedStatement ps2 = this.con.prepareStatement("delete from tb_consulta where id = ?");
+            ps2.setInt(1, c.getId());
+            ps2.execute();
+
+        }else if(o instanceof Receita){
+            Receita r = (Receita) o;
+
+            PreparedStatement ps = this.con.prepareStatement("delete from tb_receita where id = ?");
+            ps.setInt(1, r.getId());
+            ps.execute();
+
+        }
     }
 
     public List<Receita> listReceitasDeConsulta(Object id) throws Exception {
