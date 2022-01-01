@@ -67,6 +67,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 con.setId(rs.getInt("id"));
                 con.setMedico((Medico) find(Medico.class, rs.getInt("medico_id")));
                 con.setPet((Pet) find(Pet.class, rs.getInt("pet_id")));
+                con.setReceitas(listReceitasDeConsulta(con.getId()));
 
                 ps.close();
 
