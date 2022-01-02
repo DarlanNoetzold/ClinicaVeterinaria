@@ -16,10 +16,10 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     public static final String URL = "jdbc:postgresql://localhost:5432/clinica_vet_db";
     private Connection con = null;
 
-    public PersistenciaJDBC () throws Exception {
+    public PersistenciaJDBC() throws Exception {
 
         Class.forName(DRIVER);
-        System.out.println("Tentando estabelecer conexao JDBC com : "+URL+" ...");
+        System.out.println("Tentando estabelecer conexao JDBC com : " + URL + " ...");
 
         this.con = (Connection) DriverManager.getConnection(URL, USER, SENHA);
 
@@ -30,7 +30,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     public Boolean conexaoAberta() {
 
         try {
-            if(con != null)
+            if (con != null)
                 return !con.isClosed();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -42,10 +42,10 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     @Override
     public void fecharConexao() {
 
-        try{
+        try {
             this.con.close();
             System.out.println("Fechou conexao JDBC");
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -166,18 +166,19 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         }
         return null;
     }
+
     @Override
     public void persist(Object o) throws Exception {
 
-        if(o instanceof Consulta){
+        if (o instanceof Consulta) {
 
             Consulta c = (Consulta) o;
 
-            if(c.getId() == null){
+            if (c.getId() == null) {
 
                 PreparedStatement ps = this.con.prepareStatement("insert into tb_consulta "
-                                                                                + "(id, medico_id, pet_id) values "
-                                                                                + "(nextval('seq_endereco_id'), ?, ?)", new String[]{"id"});
+                        + "(id, medico_id, pet_id) values "
+                        + "(nextval('seq_endereco_id'), ?, ?)", new String[]{"id"});
 
                 ps.setString(1, c.getMedico().getCpf());
                 ps.setInt(2, c.getPet().getId());
@@ -189,7 +190,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 if (rs.next()) {
                     c.setId(rs.getInt(1));
                 }
-            }else{
+            } else {
                 PreparedStatement ps = this.con.prepareStatement("update tb_consulta set "
                         + "medico_id = ?, "
                         + "pet_id = ? "
@@ -202,11 +203,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             }
 
 
-        }else if (o instanceof Receita){
+        } else if (o instanceof Receita) {
 
             Receita r = (Receita) o;
 
-            if(r.getId() == null){
+            if (r.getId() == null) {
 
                 PreparedStatement ps = this.con.prepareStatement("insert into tb_receita "
                         + "(id, orientacao, consulta_id) values "
@@ -222,7 +223,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 if (rs.next()) {
                     r.setId(rs.getInt(1));
                 }
-            }else{
+            } else {
                 PreparedStatement ps = this.con.prepareStatement("update tb_receita set "
                         + "orientacao = ?, "
                         + "consulta_id = ? "
@@ -240,7 +241,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     @Override
     public void remover(Object o) throws Exception {
-        if(o instanceof Consulta){
+        if (o instanceof Consulta) {
 
             Consulta c = (Consulta) o;
             PreparedStatement ps1 = this.con.prepareStatement("update tb_receita set consulta_id=Null where consulta_id = ?");
@@ -251,7 +252,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             ps2.setInt(1, c.getId());
             ps2.execute();
 
-        }else if(o instanceof Receita){
+        } else if (o instanceof Receita) {
             Receita r = (Receita) o;
 
             PreparedStatement ps = this.con.prepareStatement("delete from tb_receita where id = ?");
@@ -271,7 +272,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         ResultSet rs = ps.executeQuery();
 
         lista = new ArrayList<>();
-        while(rs.next()){
+        while (rs.next()) {
 
             Receita rec = new Receita();
             rec.setId(rs.getInt("id"));
@@ -285,4 +286,27 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     }
 
+    public List<Consulta> listPesistenciaConsulta(Object id) throws Exception {
+
+        List<Consulta> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("select id, medico_id, pet_id from tb_consulta");
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList<>();
+        while (rs.next()) {
+
+            Consulta con = new Consulta();
+            con.setId(rs.getInt("id"));
+            con.setMedico((Medico) find(Medico.class, rs.getInt("medico_id")));
+            con.setPet((Pet) find(Pet.class, rs.getInt("pet_id")));
+            con.setReceitas(listReceitasDeConsulta(con.getId()));
+
+            lista.add(con);
+
+        }
+        return lista;
+
+    }
 }
