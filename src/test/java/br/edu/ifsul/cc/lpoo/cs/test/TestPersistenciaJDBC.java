@@ -1,5 +1,6 @@
 package br.edu.ifsul.cc.lpoo.cs.test;
 
+import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 import org.junit.Test;
 
@@ -17,6 +18,16 @@ public class TestPersistenciaJDBC {
         }else{
             System.out.println("Nao abriu a conexao com o BD via JDBC");
         }
+
+    }
+
+    @Test
+    public void testListPersistenciaConsulta() throws Exception {
+        PersistenciaJDBC persistencia = new PersistenciaJDBC();
+
+        Consulta consulta = (Consulta) persistencia.find(Consulta.class, 5);
+
+
 
     }
 
