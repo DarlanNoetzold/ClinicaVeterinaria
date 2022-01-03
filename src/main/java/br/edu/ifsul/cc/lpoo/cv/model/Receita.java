@@ -58,4 +58,5 @@ public class Receita {
     public void setProdutos(List<Produto> produtos) {
         this.produtos = produtos;
     }
+
 }

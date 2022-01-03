@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Calendar;
 
 @Entity
-@Table(name = "tb_jogador")
+@Table(name = "tb_pessoa")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo")
 public class Pessoa {
