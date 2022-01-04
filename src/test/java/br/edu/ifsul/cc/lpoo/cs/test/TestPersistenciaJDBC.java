@@ -32,7 +32,7 @@ public class TestPersistenciaJDBC {
             List<Consulta> lista = persistencia.listPesistenciaConsulta();
             if(!lista.isEmpty()){
                 for(Consulta c : lista){
-                    System.out.println("----Dados de consulta----\n" +
+                    System.out.println("\n\n----Dados de consulta----\n" +
                             "\nId: " + c.getId() +
                             "\nCPF do Médico: "+c.getMedico().getCpf()+
                             "\nCRMV do Médico: "+c.getMedico().getNumero_crmv()+
@@ -44,13 +44,18 @@ public class TestPersistenciaJDBC {
                             "id=" + r.getId() +
                             ", orientacao='" + r.getOrientacao()+ '\'' +
                             '}'));
+                    c.getReceitas().stream().forEach(r -> {
+                        try {
+                            persistencia.remover(r);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    persistencia.remover(c);
+
                 }
             }
         }
+        persistencia.fecharConexao();
     }
-
-
-
-
-
 }
