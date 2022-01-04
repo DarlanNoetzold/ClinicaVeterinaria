@@ -242,7 +242,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     @Override
     public void remover(Object o) throws Exception {
         if (o instanceof Consulta) {
-            System.out.println("Teste");
             Consulta c = (Consulta) o;
             PreparedStatement ps1 = this.con.prepareStatement("update tb_receita set consulta_id=Null where consulta_id = ?");
             ps1.setInt(1, c.getId());
