@@ -12,6 +12,10 @@ public class Pessoa {
     private String cpf;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar data_cadastro;
+
+    @Column(nullable = false)
     private String rg;
 
     @Column(nullable = false)
@@ -120,5 +124,13 @@ public class Pessoa {
 
     public void setComplemento(String complemento) {
         this.complemento = complemento;
+    }
+
+    public Calendar getData_cadastro() {
+        return data_cadastro;
+    }
+
+    public void setData_cadastro(Calendar data_cadastro) {
+        this.data_cadastro = data_cadastro;
     }
 }

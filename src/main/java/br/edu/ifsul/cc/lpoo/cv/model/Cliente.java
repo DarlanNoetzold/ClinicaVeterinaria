@@ -11,6 +11,10 @@ public class Cliente extends Pessoa{
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    private Calendar data_cadastro;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Calendar data_ultima_visita;
 
     @OneToMany(mappedBy = "cliente")
@@ -33,5 +37,13 @@ public class Cliente extends Pessoa{
 
     public void setPets(List<Pet> pets) {
         this.pets = pets;
+    }
+
+    public Calendar getData_cadastro() {
+        return data_cadastro;
+    }
+
+    public void setData_cadastro(Calendar data_cadastro) {
+        this.data_cadastro = data_cadastro;
     }
 }
