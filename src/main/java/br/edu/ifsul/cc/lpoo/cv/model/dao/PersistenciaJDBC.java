@@ -211,18 +211,12 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 PreparedStatement ps = this.con.prepareStatement("insert into tb_receita "
                         + "(id, orientacao, consulta_id) values "
-                        + "(nextval('seq_endereco_id'), ?, ?)", new String[]{"id"});
+                        + "(?, ?)");
 
                 ps.setString(1, r.getOrientacao());
                 ps.setInt(2, r.getConsulta().getId());
 
                 ps.executeUpdate();
-
-                ResultSet rs = ps.getGeneratedKeys();
-
-                if (rs.next()) {
-                    r.setId(rs.getInt(1));
-                }
             } else {
                 PreparedStatement ps = this.con.prepareStatement("update tb_receita set "
                         + "orientacao = ?, "
@@ -234,8 +228,175 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 ps.execute();
             }
+        } else if (o instanceof Medico) {
+
+            Medico m = (Medico) o;
+
+            if (m.getData_cadastro() == null) {
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_medico "
+                        + "(data_cadastro, numero_crmv, cpf) values "
+                        + "(now(),?, ?)");
+                ps.setString(1, m.getNumero_crmv());
+                ps.setString(2, m.getCpf());
+
+                ps.executeUpdate();
+            } else {
+                PreparedStatement ps = this.con.prepareStatement("update tb_medico set "
+                        + "numero_crmv = ?, "
+                        + "cpf = ? "
+                        + "where data_cadastro = ?");
+                ps.setString(1, m.getNumero_crmv());
+                ps.setString(2, m.getCpf());
+                Date dtU = null;
+                dtU.setTime(m.getData_cadastro().getTimeInMillis());
+                ps.setDate(3, dtU);
+
+                ps.execute();
+            }
+        }else if (o instanceof Pet) {
+
+            Pet p = (Pet) o;
+
+            if (p.getId() == null) {
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_pet "
+                        + "(data_nascimento, nome, observacao, cliente_id, raca_id) values "
+                        + "(?, ?, ?, ?, ?)");
+                Date dtU = null;
+                dtU.setTime(p.getData_nascimento().getTimeInMillis());
+                ps.setDate(1, dtU);
+                ps.setString(2, p.getNome());
+                ps.setString(3, p.getObservacao());
+                ps.setString(4, p.getCliente().getCpf());
+                ps.setInt(5, p.getRaca().getId());
 
 
+                ps.executeUpdate();
+            } else {
+                PreparedStatement ps = this.con.prepareStatement("update tb_pet set "
+                        + "data_nascimento = ?, "
+                        + "nome = ?, "
+                        + "observacao = ?, "
+                        + "cliente_id = ?, "
+                        + "raca_id = ? "
+                        + "where id = ?");
+                Date dtU = null;
+                dtU.setTime(p.getData_nascimento().getTimeInMillis());
+                ps.setDate(1, dtU);
+                ps.setString(2, p.getNome());
+                ps.setString(3, p.getObservacao());
+                ps.setString(4, p.getCliente().getCpf());
+                ps.setInt(5, p.getRaca().getId());
+                ps.setInt(6, p.getId());
+
+                ps.execute();
+            }
+        }else if (o instanceof Cliente) {
+
+            Cliente c = (Cliente) o;
+
+            if (c.getData_cadastro() == null) {
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_cliente "
+                        + "(data_cadastro, data_ultima_visita, cpf) values "
+                        + "(now(), ?, ?)");
+                Date dtU = null;
+                dtU.setTime(c.getData_ultima_visita().getTimeInMillis());
+                ps.setDate(1, dtU);
+                ps.setString(2, c.getCpf());
+
+                ps.executeUpdate();
+            } else {
+                PreparedStatement ps = this.con.prepareStatement("update tb_pet set "
+                        + "data_ultima_visita = ?, "
+                        + "cpf = ?, "
+                        + "where data_cadastro = ?");
+                Date dtU = null;
+                dtU.setTime(c.getData_ultima_visita().getTimeInMillis());
+                ps.setDate(1, dtU);
+                ps.setString(2, c.getCpf());
+                dtU.setTime(c.getData_cadastro().getTimeInMillis());
+                ps.setDate(3, dtU);
+                ps.execute();
+            }
+        }else if (o instanceof Raca) {
+
+            Raca r = (Raca) o;
+
+            if (r.getId() == null) {
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_raca "
+                        + "(nome, especie_id) values "
+                        + "(?, ?)");
+
+                ps.setString(1, r.getNome());
+                ps.setInt(2, r.getEspecie().getId());
+
+                ps.executeUpdate();
+            } else {
+                PreparedStatement ps = this.con.prepareStatement("update tb_raca set "
+                        + "nome = ?, "
+                        + "especie_id = ?, "
+                        + "where id = ?");
+                ps.setString(1, r.getNome());
+                ps.setInt(1, r.getEspecie().getId());
+                ps.setInt(1, r.getId());
+                ps.execute();
+            }
+        }else if (o instanceof Especie) {
+
+            Especie e = (Especie) o;
+
+            if (e.getId() == null) {
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_especie "
+                        + "(nome) values "
+                        + "(?)");
+
+                ps.setString(1, e.getNome());
+
+                ps.executeUpdate();
+            } else {
+                PreparedStatement ps = this.con.prepareStatement("update tb_especie set "
+                        + "nome = ?, "
+                        + "where id = ?");
+                ps.setString(1, e.getNome());
+                ps.setInt(1, e.getId());
+                ps.execute();
+            }
+        }else if (o instanceof Pessoa) {
+
+            Pessoa p = (Pessoa) o;
+
+            if (p.getData_cadastro()== null) {
+
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_pessoa "
+                        + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, sehna) values "
+                        + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
+
+                ps.setString(1, );
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+                ps.setString(1, p.getNome());
+
+
+                ps.executeUpdate();
+            } else {
+                PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
+                        + "nome = ?, "
+                        + "where id = ?");
+                ps.setString(1, e.getNome());
+                ps.setInt(1, e.getId());
+                ps.execute();
+            }
         }
     }
 
