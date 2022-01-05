@@ -1,7 +1,6 @@
 package br.edu.ifsul.cc.lpoo.cs.test;
 
-import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
-import br.edu.ifsul.cc.lpoo.cv.model.Receita;
+import br.edu.ifsul.cc.lpoo.cv.model.*;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 import org.junit.Test;
 
@@ -54,6 +53,8 @@ public class TestPersistenciaJDBC {
                     persistencia.remover(c);
 
                 }
+            }else{
+
             }
         }
         persistencia.fecharConexao();
