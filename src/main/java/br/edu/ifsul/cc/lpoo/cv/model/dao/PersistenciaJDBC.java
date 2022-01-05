@@ -375,17 +375,19 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                         + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, sehna) values "
                         + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
 
-                ps.setString(1, );
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
-                ps.setString(1, p.getNome());
+                ps.setString(1, "M");
+                ps.setString(2, p.getCpf());
+                ps.setString(3, p.getCep());
+                ps.setString(4, p.getComplemento());
+                Date dtU = null;
+                dtU.setTime(p.getData_nascimento().getTimeInMillis());
+                ps.setDate(5, dtU);
+                ps.setString(6, p.getEmail());
+                ps.setString(7, p.getEndereco());
+                ps.setString(8, p.getNome());
+                ps.setString(9, p.getNumero_celular());
+                ps.setString(10, p.getRg());
+                ps.setString(11, p.getSenha());
 
 
                 ps.executeUpdate();
@@ -393,8 +395,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
                         + "nome = ?, "
                         + "where id = ?");
-                ps.setString(1, e.getNome());
-                ps.setInt(1, e.getId());
+                ps.setString(1, p.getNome());
                 ps.execute();
             }
         }
