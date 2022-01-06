@@ -14,7 +14,7 @@ public class Medico extends Pessoa{
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Calendar data_cadastro;
+    private Calendar data_cadastro_Medico;
 
     public Medico() {
     }
@@ -27,11 +27,11 @@ public class Medico extends Pessoa{
         this.numero_crmv = numero_crmv;
     }
 
-    public Calendar getData_cadastro() {
-        return data_cadastro;
+    public Calendar getData_cadastro_Medico() {
+        return data_cadastro_Medico;
     }
 
-    public void setData_cadastro(Calendar data_cadastro) {
-        this.data_cadastro = data_cadastro;
+    public void setData_cadastro_Medico(Calendar data_cadastro) {
+        this.data_cadastro_Medico = data_cadastro;
     }
 }

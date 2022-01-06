@@ -11,7 +11,7 @@ public class Cliente extends Pessoa{
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Calendar data_cadastro;
+    private Calendar data_cadastro_Cliente;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -39,11 +39,11 @@ public class Cliente extends Pessoa{
         this.pets = pets;
     }
 
-    public Calendar getData_cadastro() {
-        return data_cadastro;
+    public Calendar getData_cadastro_Cliente() {
+        return data_cadastro_Cliente;
     }
 
-    public void setData_cadastro(Calendar data_cadastro) {
-        this.data_cadastro = data_cadastro;
+    public void setData_cadastro_Cliente(Calendar data_cadastro) {
+        this.data_cadastro_Cliente = data_cadastro;
     }
 }
