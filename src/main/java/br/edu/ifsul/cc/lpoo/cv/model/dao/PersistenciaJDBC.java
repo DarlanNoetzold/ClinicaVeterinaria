@@ -3,6 +3,7 @@ package br.edu.ifsul.cc.lpoo.cv.model.dao;
 import br.edu.ifsul.cc.lpoo.cv.model.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -370,16 +371,54 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             Pessoa p = (Pessoa) o;
 
             if (p.getData_cadastro()== null) {
+                System.out.println("Inciando insert de Pessoa...");
+                try {
+                    PreparedStatement ps = this.con.prepareStatement("insert into tb_pessoa "
+                            + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, senha) values "
+                            + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
 
-                PreparedStatement ps = this.con.prepareStatement("insert into tb_pessoa "
-                        + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, sehna) values "
-                        + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
+                    ps.setString(1, p.getTipo());
+                    ps.setString(2, p.getCpf());
+                    ps.setString(3, p.getCep());
+                    ps.setString(4, p.getComplemento());
+                    Date dtU = new Date(System.currentTimeMillis());
+                    dtU.setTime(p.getData_nascimento().getTimeInMillis());
+                    ps.setDate(5, dtU);
+                    ps.setString(6, p.getEmail());
+                    ps.setString(7, p.getEndereco());
+                    ps.setString(8, p.getNome());
+                    ps.setString(9, p.getNumero_celular());
+                    ps.setString(10, p.getRg());
+                    ps.setString(11, p.getSenha());
 
-                ps.setString(1, "M");
+
+                    ps.executeUpdate();
+                }catch (Exception e){
+                    if(!e.getClass().equals("class org.postgresql.util.PSQLException"))
+                        System.out.println("Já existe esse CPF cadastrado. Tente fazer um update. Mensagem de erro: "+ e.getMessage());
+                    else
+                        e.printStackTrace();
+                }
+            } else {
+                System.out.println("Inciando update de Pessoa...");
+                PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
+                        + "tipo = ?, "
+                        + "cpf = ?, "
+                        + "cep = ?, "
+                        + "complemento = ?, "
+                        + "data_nascimento = ?, "
+                        + "email = ?, "
+                        + "endereco = ?, "
+                        + "nome = ?, "
+                        + "numero_celular = ?, "
+                        + "rg = ?, "
+                        + "senha = ? "
+                        + "where data_cadastro = ?");
+                ps.setString(1, p.getTipo());
                 ps.setString(2, p.getCpf());
                 ps.setString(3, p.getCep());
                 ps.setString(4, p.getComplemento());
-                Date dtU = null;
+                Date dtU = new Date(System.currentTimeMillis());
                 dtU.setTime(p.getData_nascimento().getTimeInMillis());
                 ps.setDate(5, dtU);
                 ps.setString(6, p.getEmail());
@@ -388,14 +427,8 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps.setString(9, p.getNumero_celular());
                 ps.setString(10, p.getRg());
                 ps.setString(11, p.getSenha());
-
-
-                ps.executeUpdate();
-            } else {
-                PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
-                        + "nome = ?, "
-                        + "where id = ?");
-                ps.setString(1, p.getNome());
+                dtU.setTime(p.getData_cadastro().getTimeInMillis());
+                ps.setDate(12, dtU);
                 ps.execute();
             }
         }
