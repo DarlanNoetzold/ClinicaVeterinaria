@@ -16,6 +16,9 @@ public class Pessoa {
     private Calendar data_cadastro;
 
     @Column(nullable = false)
+    private String tipo;
+
+    @Column(nullable = false)
     private String rg;
 
     @Column(nullable = false)
@@ -132,5 +135,13 @@ public class Pessoa {
 
     public void setData_cadastro(Calendar data_cadastro) {
         this.data_cadastro = data_cadastro;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
