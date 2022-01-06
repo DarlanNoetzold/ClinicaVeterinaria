@@ -87,10 +87,16 @@ public class TestPersistenciaJDBC {
                 persistencia.persist(pessoaCliente);
 
                 Cliente cliente = new Cliente();
-                cliente.setCpf("11111111111");
+                cliente.setCpf(pessoaCliente.getCpf());
                 cliente.setData_ultima_visita(Calendar.getInstance());
 
-                persistencia.persist(pessoaCliente);
+                persistencia.persist(cliente);
+
+                Medico medico = new Medico();
+                medico.setNumero_crmv("123456789");
+                medico.setCpf(pessoaMedico.getCpf());
+
+                persistencia.persist(medico);
 
 
             }

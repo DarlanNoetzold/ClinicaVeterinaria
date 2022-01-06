@@ -3,7 +3,6 @@ package br.edu.ifsul.cc.lpoo.cv.model.dao;
 import br.edu.ifsul.cc.lpoo.cv.model.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -233,10 +232,10 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
             Medico m = (Medico) o;
 
-            if (m.getData_cadastro() == null) {
+            if (m.getData_cadastro_Medico() == null) {
 
                 PreparedStatement ps = this.con.prepareStatement("insert into tb_medico "
-                        + "(data_cadastro, numero_crmv, cpf) values "
+                        + "(data_cadastro_medico, numero_crmv, cpf) values "
                         + "(now(),?, ?)");
                 ps.setString(1, m.getNumero_crmv());
                 ps.setString(2, m.getCpf());
@@ -246,7 +245,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 PreparedStatement ps = this.con.prepareStatement("update tb_medico set "
                         + "numero_crmv = ?, "
                         + "cpf = ? "
-                        + "where data_cadastro = ?");
+                        + "where data_cadastro_medico = ?");
                 ps.setString(1, m.getNumero_crmv());
                 ps.setString(2, m.getCpf());
                 Date dtU = null;
@@ -297,28 +296,27 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
             Cliente c = (Cliente) o;
 
-            if (c.getData_cadastro() == null) {
-
+            if (c.getData_cadastro_Cliente() == null) {
+                System.out.println("Iniciando Insert de Cliente...");
                 PreparedStatement ps = this.con.prepareStatement("insert into tb_cliente "
-                        + "(data_cadastro, data_ultima_visita, cpf) values "
-                        + "(now(), ?, ?)");
-                Date dtU = null;
+                        + "(data_cadastro_cliente,data_ultima_visita, cpf) values "
+                        + "(now(),?, ?)");
+                Date dtU = new Date(System.currentTimeMillis());
                 dtU.setTime(c.getData_ultima_visita().getTimeInMillis());
                 ps.setDate(1, dtU);
                 ps.setString(2, c.getCpf());
 
                 ps.executeUpdate();
             } else {
-                PreparedStatement ps = this.con.prepareStatement("update tb_pet set "
-                        + "data_ultima_visita = ?, "
-                        + "cpf = ?, "
-                        + "where data_cadastro = ?");
-                Date dtU = null;
+                System.out.println("Iniciando Update de Cliente...");
+                PreparedStatement ps = this.con.prepareStatement("update tb_cliente set "
+                        + "data_ultima_visita = ? "
+                        + "where data_cadastro_cliente = ?");
+                Date dtU = new Date(System.currentTimeMillis());
                 dtU.setTime(c.getData_ultima_visita().getTimeInMillis());
                 ps.setDate(1, dtU);
-                ps.setString(2, c.getCpf());
-                dtU.setTime(c.getData_cadastro().getTimeInMillis());
-                ps.setDate(3, dtU);
+                dtU.setTime(System.currentTimeMillis());
+                ps.setDate(2, dtU);
                 ps.execute();
             }
         }else if (o instanceof Raca) {
@@ -367,53 +365,14 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps.execute();
             }
         }else if (o instanceof Pessoa) {
-
             Pessoa p = (Pessoa) o;
 
-            if (p.getData_cadastro()== null) {
+            if (testaId(o)) {
                 System.out.println("Inciando insert de Pessoa...");
-                try {
-                    PreparedStatement ps = this.con.prepareStatement("insert into tb_pessoa "
-                            + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, senha) values "
-                            + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_pessoa "
+                        + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, senha) values "
+                        + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
 
-                    ps.setString(1, p.getTipo());
-                    ps.setString(2, p.getCpf());
-                    ps.setString(3, p.getCep());
-                    ps.setString(4, p.getComplemento());
-                    Date dtU = new Date(System.currentTimeMillis());
-                    dtU.setTime(p.getData_nascimento().getTimeInMillis());
-                    ps.setDate(5, dtU);
-                    ps.setString(6, p.getEmail());
-                    ps.setString(7, p.getEndereco());
-                    ps.setString(8, p.getNome());
-                    ps.setString(9, p.getNumero_celular());
-                    ps.setString(10, p.getRg());
-                    ps.setString(11, p.getSenha());
-
-
-                    ps.executeUpdate();
-                }catch (Exception e){
-                    if(!e.getClass().equals("class org.postgresql.util.PSQLException"))
-                        System.out.println("Já existe esse CPF cadastrado. Tente fazer um update. Mensagem de erro: "+ e.getMessage());
-                    else
-                        e.printStackTrace();
-                }
-            } else {
-                System.out.println("Inciando update de Pessoa...");
-                PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
-                        + "tipo = ?, "
-                        + "cpf = ?, "
-                        + "cep = ?, "
-                        + "complemento = ?, "
-                        + "data_nascimento = ?, "
-                        + "email = ?, "
-                        + "endereco = ?, "
-                        + "nome = ?, "
-                        + "numero_celular = ?, "
-                        + "rg = ?, "
-                        + "senha = ? "
-                        + "where data_cadastro = ?");
                 ps.setString(1, p.getTipo());
                 ps.setString(2, p.getCpf());
                 ps.setString(3, p.getCep());
@@ -427,8 +386,39 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps.setString(9, p.getNumero_celular());
                 ps.setString(10, p.getRg());
                 ps.setString(11, p.getSenha());
-                dtU.setTime(p.getData_cadastro().getTimeInMillis());
-                ps.setDate(12, dtU);
+
+
+                ps.executeUpdate();
+            } else {
+                System.out.println("Inciando update de Pessoa...");
+                PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
+                        + "tipo = ?, "
+                        + "cpf = ?, "
+                        + "cep = ?, "
+                        + "complemento = ?, "
+                        + "data_nascimento = ?, "
+                        + "email = ?, "
+                        + "endereco = ?, "
+                        + "nome = ?, "
+                        + "numero_celular = ?, "
+                        + "rg = ?, "
+                        + "senha = ?, "
+                        + "data_cadastro = now()"
+                        + "where cpf = ?");
+                ps.setString(1, p.getTipo());
+                ps.setString(2, p.getCpf());
+                ps.setString(3, p.getCep());
+                ps.setString(4, p.getComplemento());
+                Date dtU = new Date(System.currentTimeMillis());
+                dtU.setTime(p.getData_nascimento().getTimeInMillis());
+                ps.setDate(5, dtU);
+                ps.setString(6, p.getEmail());
+                ps.setString(7, p.getEndereco());
+                ps.setString(8, p.getNome());
+                ps.setString(9, p.getNumero_celular());
+                ps.setString(10, p.getRg());
+                ps.setString(11, p.getSenha());
+                ps.setString(12, p.getCpf());
                 ps.execute();
             }
         }
@@ -498,6 +488,21 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
         }
         return lista;
+
+    }
+
+    public boolean testaId(Object o) throws Exception{
+        Pessoa p = (Pessoa) o;
+        PreparedStatement psTest = this.con.prepareStatement("select cpf from tb_pessoa");
+
+        ResultSet rs = psTest.executeQuery();
+
+        while (rs.next()) {
+            if (p.getCpf().equals(rs.getString("cpf")))
+                return false;
+        }
+
+        return true;
 
     }
 }
