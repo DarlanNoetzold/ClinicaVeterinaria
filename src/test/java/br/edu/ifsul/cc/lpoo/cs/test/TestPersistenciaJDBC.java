@@ -54,6 +54,18 @@ public class TestPersistenciaJDBC {
                     persistencia.remover(c);
 
                 }
+                Pet pet = (Pet) persistencia.find(Pet.class, 1);
+                persistencia.remover(pet);
+                Raca rac = (Raca) persistencia.find(Raca.class, 1);
+                persistencia.remover(rac);
+                Especie esp = (Especie) persistencia.find(Especie.class, 1);
+                persistencia.remover(esp);
+                Cliente cli = (Cliente) persistencia.find(Cliente.class, "11111111111");
+                persistencia.remover(cli);
+                Medico med = (Medico) persistencia.find(Medico.class, "00000000000");
+                persistencia.remover(med);
+
+
             }else{
                 System.out.println("Nenhum dado encontrado, inciando incersão!");
                 Pessoa pessoaMedico = new Pessoa();
