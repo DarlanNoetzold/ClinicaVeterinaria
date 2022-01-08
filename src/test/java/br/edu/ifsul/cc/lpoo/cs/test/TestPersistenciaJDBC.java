@@ -54,20 +54,19 @@ public class TestPersistenciaJDBC {
                     persistencia.remover(c);
 
                 }
-                Pet pet = (Pet) persistencia.find(Pet.class, 1);
+                Pet pet = (Pet) persistencia.find(Pet.class, persistencia.ultimoId(Pet.class));
                 persistencia.remover(pet);
-                Raca rac = (Raca) persistencia.find(Raca.class, 1);
+                Raca rac = (Raca) persistencia.find(Raca.class, persistencia.ultimoId(Raca.class));
                 persistencia.remover(rac);
-                Especie esp = (Especie) persistencia.find(Especie.class, 1);
+                Especie esp = (Especie) persistencia.find(Especie.class, persistencia.ultimoId(Especie.class));
                 persistencia.remover(esp);
-                Cliente cli = (Cliente) persistencia.find(Cliente.class, "11111111111");
+                Cliente cli = (Cliente) persistencia.find(Cliente.class, persistencia.ultimoId(Cliente.class));
                 persistencia.remover(cli);
-                Medico med = (Medico) persistencia.find(Medico.class, "00000000000");
+                Medico med = (Medico) persistencia.find(Medico.class, persistencia.ultimoId(Medico.class));
                 persistencia.remover(med);
 
 
             }else{
-                int id = 1;
                 System.out.println("Nenhum dado encontrado, inciando incersão!");
                 Pessoa pessoaMedico = new Pessoa();
                 pessoaMedico.setTipo("M");
@@ -118,17 +117,17 @@ public class TestPersistenciaJDBC {
 
                 Raca raca = new Raca();
                 raca.setNome("Poodle");
-                raca.setEspecie(((Especie) persistencia.find(Especie.class, id)));
+                raca.setEspecie(((Especie) persistencia.find(Especie.class, persistencia.ultimoId(Especie.class))));
 
 
                 persistencia.persist(raca);
 
                 Pet pet = new Pet();
-                pet.setRaca((Raca) persistencia.find(Raca.class, id));
+                pet.setRaca((Raca) persistencia.find(Raca.class, persistencia.ultimoId(Raca.class)));
                 Calendar data_nasc = Calendar.getInstance();
                 data_nasc.set(2015,10,25);
                 pet.setData_nascimento(data_nasc);
-                pet.setCliente((Cliente) persistencia.find(Cliente.class, "11111111111"));
+                pet.setCliente((Cliente) persistencia.find(Cliente.class, persistencia.ultimoId(Cliente.class)));
                 pet.setObservacao("Esquema vacinal");
                 pet.setNome("Galadriel");
 
@@ -136,45 +135,45 @@ public class TestPersistenciaJDBC {
 
                 //Consulta 01
                 Consulta consulta1 = new Consulta();
-                consulta1.setMedico((Medico) persistencia.find(Medico.class, "00000000000"));
-                consulta1.setPet((Pet) persistencia.find(Pet.class, id));
+                consulta1.setMedico((Medico) persistencia.find(Medico.class, persistencia.ultimoId(Medico.class)));
+                consulta1.setPet((Pet) persistencia.find(Pet.class, persistencia.ultimoId(Pet.class)));
                 persistencia.persist(consulta1);
 
                 //Consulta 02
                 Consulta consulta2 = new Consulta();
-                consulta2.setMedico((Medico) persistencia.find(Medico.class, "00000000000"));
-                consulta2.setPet((Pet) persistencia.find(Pet.class, id));
+                consulta2.setMedico((Medico) persistencia.find(Medico.class, persistencia.ultimoId(Medico.class)));
+                consulta2.setPet((Pet) persistencia.find(Pet.class, persistencia.ultimoId(Pet.class)));
                 persistencia.persist(consulta2);
 
                 //Receitas da consulta 01
                 Receita receita1 = new Receita();
-                receita1.setConsulta((Consulta) persistencia.find(Consulta.class, (id)));
+                receita1.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita1.setOrientacao("Vacina 01");
                 persistencia.persist(receita1);
                 Receita receita2 = new Receita();
-                receita2.setConsulta((Consulta) persistencia.find(Consulta.class, (id)));
+                receita2.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita2.setOrientacao("Vacina 02");
                 persistencia.persist(receita2);
                 Receita receita3 = new Receita();
-                receita3.setConsulta((Consulta) persistencia.find(Consulta.class, (id)));
+                receita3.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita3.setOrientacao("Vacina 03");
                 persistencia.persist(receita3);
                 Receita receita4 = new Receita();
-                receita4.setConsulta((Consulta) persistencia.find(Consulta.class, (id)));
+                receita4.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita4.setOrientacao("Vacina 04");
                 persistencia.persist(receita4);
 
                 //Receitas da consulta 02
                 Receita receita5 = new Receita();
-                receita5.setConsulta((Consulta) persistencia.find(Consulta.class, (id+1)));
+                receita5.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita5.setOrientacao("Anti vermes 01");
                 persistencia.persist(receita5);
                 Receita receita6 = new Receita();
-                receita6.setConsulta((Consulta) persistencia.find(Consulta.class, (id+1)));
+                receita6.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita6.setOrientacao("Anti vermes 02");
                 persistencia.persist(receita6);
                 Receita receita7 = new Receita();
-                receita7.setConsulta((Consulta) persistencia.find(Consulta.class, (id+1)));
+                receita7.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
                 receita7.setOrientacao("Anti vermes 03");
                 persistencia.persist(receita7);
 
