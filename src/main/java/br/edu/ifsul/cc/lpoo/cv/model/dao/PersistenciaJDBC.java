@@ -541,11 +541,78 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         return true;
 
     }
-    public Object ultimoId(Object o) throws Exception{
-        //TO-DO
+    public Object ultimoId(Class c) throws Exception{
 
-        return o;
+        if (c == Consulta.class) {
 
+            PreparedStatement ps = this.con.prepareStatement("select id from tb_consulta order by id desc limit 1");
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                ps.close();
+
+                return id;
+            }
+
+        } else if (c == Medico.class) {
+            PreparedStatement ps = this.con.prepareStatement("select cpf from tb_medico order by cpf desc limit 1");
+            ResultSet rsMedico = ps.executeQuery();
+            if (rsMedico.next()) {
+                String id = rsMedico.getString("cpf");
+                ps.close();
+
+                return id;
+            }
+        } else if (c == Pet.class) {
+            PreparedStatement ps = this.con.prepareStatement("select id from tb_pet order by id desc limit 1");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                ps.close();
+
+                return id;
+            }
+
+        } else if (c == Cliente.class) {
+            PreparedStatement ps = this.con.prepareStatement("select cpf from tb_cliente order by cpf desc limit 1");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String id = rs.getString("cpf");
+                ps.close();
+
+                return id;
+            }
+        } else if (c == Raca.class) {
+            PreparedStatement ps = this.con.prepareStatement("select id from tb_raca order by id desc limit 1");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                ps.close();
+
+                return id;
+            }
+        } else if (c == Especie.class) {
+            PreparedStatement ps = this.con.prepareStatement("select id from tb_especie order by id desc limit 1");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                ps.close();
+
+                return id;
+            }
+        } else if (c == Receita.class) {
+            PreparedStatement ps = this.con.prepareStatement("select id from tb_receita order by id desc limit 1");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                ps.close();
+
+                return id;
+            }
+        }
+        return null;
     }
 
 }
