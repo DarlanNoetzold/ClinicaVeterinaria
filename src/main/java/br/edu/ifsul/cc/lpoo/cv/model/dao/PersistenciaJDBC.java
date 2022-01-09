@@ -527,6 +527,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     }
 
+    //Método usado para testar se o CPF de teste já existe na entidade Pessoa
     public boolean testaId(Object o) throws Exception{
         Pessoa p = (Pessoa) o;
         PreparedStatement psTest = this.con.prepareStatement("select cpf from tb_pessoa");
@@ -541,6 +542,8 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         return true;
 
     }
+
+    //Método auxiliar para encontrar o último registro, usado para testes
     public Object ultimoId(Class c) throws Exception{
 
         if (c == Consulta.class) {
