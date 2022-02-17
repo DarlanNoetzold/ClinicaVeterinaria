@@ -1,11 +1,12 @@
 package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_funcionario")
 @DiscriminatorValue("F")
-public class Funcionario extends Pessoa{
+public class Funcionario extends Pessoa implements Serializable {
 
     @Column(nullable = false)
     private String numero_ctps;

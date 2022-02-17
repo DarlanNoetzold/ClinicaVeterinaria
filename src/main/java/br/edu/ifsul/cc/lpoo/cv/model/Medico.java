@@ -1,13 +1,14 @@
 package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.Calendar;
 
 @Entity
 @Table(name = "tb_medico")
 @DiscriminatorValue("M")
-public class Medico extends Pessoa{
+public class Medico extends Pessoa implements Serializable {
 
     @Column(nullable = false)
     private String numero_crmv;

@@ -4,11 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_fornecedor")
 @DiscriminatorValue("O")
-public class Fornecedor extends Pessoa{
+public class Fornecedor extends Pessoa implements Serializable {
 
     @Column(nullable = false)
     private String cnpj;

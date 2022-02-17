@@ -1,11 +1,12 @@
 package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "tb_consulta")
-public class Consulta {
+public class Consulta implements Serializable {
     @Id
     @SequenceGenerator(name = "seq_consulta", sequenceName = "seq_consulta_id", allocationSize = 1)
     @GeneratedValue(generator = "seq_consulta", strategy = GenerationType.SEQUENCE)

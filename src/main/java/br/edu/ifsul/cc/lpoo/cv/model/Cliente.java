@@ -1,13 +1,14 @@
 package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
 @Entity
 @Table(name = "tb_cliente")
 @DiscriminatorValue("C")
-public class Cliente extends Pessoa{
+public class Cliente extends Pessoa implements Serializable {
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)

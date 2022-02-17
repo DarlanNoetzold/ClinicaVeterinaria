@@ -2,11 +2,12 @@ package br.edu.ifsul.cc.lpoo.cv.model;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Calendar;
 
 @Entity
 @Table(name = "tb_agenda")
-public class Agenda {
+public class Agenda implements Serializable {
     @Id
     @SequenceGenerator(name = "seq_agenda", sequenceName = "seq_agenda_id", allocationSize = 1)
     @GeneratedValue(generator = "seq_agenda", strategy = GenerationType.SEQUENCE)

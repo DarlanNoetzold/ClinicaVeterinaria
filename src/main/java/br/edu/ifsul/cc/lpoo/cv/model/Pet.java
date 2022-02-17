@@ -1,11 +1,12 @@
 package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Calendar;
 
 @Entity
 @Table(name = "tb_pet")
-public class Pet {
+public class Pet implements Serializable {
 
     @Id
     @SequenceGenerator(name = "seq_pet", sequenceName = "seq_pet_id", allocationSize = 1)
