@@ -618,4 +618,37 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         return null;
     }
 
+    public Funcionario doLogin(String cpf, String senha) throws Exception {
+        Funcionario funcionario = null;
+
+        PreparedStatement psCpf =
+                this.con.prepareStatement("select p.cpf from tb_funcionario p where p.cpf = ?");
+
+        psCpf.setString(1, cpf);
+
+        ResultSet rsCpf = psCpf.executeQuery();
+        funcionario = new Funcionario();
+        if(rsCpf.next()){
+            funcionario.setCpf(rsCpf.getString("cpf"));
+            System.out.println(funcionario.getCpf());
+        }
+        psCpf.close();
+
+        PreparedStatement psSenha =
+                this.con.prepareStatement("select p.senha from tb_funcionario p where p.senha = ? ");
+
+        psSenha.setString(1, senha);
+
+        ResultSet rsSenha = psSenha.executeQuery();
+
+        if(rsSenha.next()){
+            funcionario.setSenha(rsSenha.getString("senha"));
+            System.out.println(funcionario.getSenha());
+        }
+
+        psSenha.close();
+        return funcionario;
+
+    }
+
 }
