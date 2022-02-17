@@ -317,6 +317,33 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps.setDate(2, dtU);
                 ps.execute();
             }
+        }else if (o instanceof Funcionario) {
+            Funcionario c = (Funcionario) o;
+
+            if (c.getData_cadastro() == null) {
+                System.out.println("Iniciando Insert de Funcionario...");
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_funcionario "
+                        + "(cargo,numero_ctps, numero_pis, cpf) values "
+                        + "(?,?,?,?)");
+                ps.setString(1, c.getCargo().toString());
+                ps.setString(2, c.getNumero_ctps());
+                ps.setString(3, c.getNumero_pis());
+                ps.setString(4, c.getCpf());
+
+                ps.executeUpdate();
+            } else {
+                System.out.println("Iniciando Update de Cliente...");
+                PreparedStatement ps = this.con.prepareStatement("update tb_funcionario set "
+                        + "cargo = ?, "
+                        + "numero_ctps = ?, "
+                        + "numero_pis = ?, "
+                        + "where cpf = ?");
+                ps.setString(1, c.getCargo().toString());
+                ps.setString(2, c.getNumero_ctps());
+                ps.setString(3, c.getNumero_pis());
+                ps.setString(4, c.getCpf());
+                ps.execute();
+            }
         }else if (o instanceof Raca) {
 
             Raca r = (Raca) o;
@@ -635,7 +662,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         psCpf.close();
 
         PreparedStatement psSenha =
-                this.con.prepareStatement("select p.senha from tb_funcionario p where p.senha = ? ");
+                this.con.prepareStatement("select p.senha from tb_pessoa p where p.senha = ? ");
 
         psSenha.setString(1, senha);
 

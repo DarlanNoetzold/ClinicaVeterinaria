@@ -184,4 +184,104 @@ public class TestPersistenciaJDBC {
         }
         persistencia.fecharConexao();
     }
+
+    @Test
+    public void testInsertFuncionario() throws Exception{
+        PersistenciaJDBC persistencia = new PersistenciaJDBC();
+
+        Pessoa pessoaFunc = new Pessoa();
+        pessoaFunc.setTipo("F");
+        pessoaFunc.setCep("45678912");
+        pessoaFunc.setComplemento("Eh isso ai mesmo");
+        pessoaFunc.setNome("Bruno");
+        pessoaFunc.setCpf("123456");
+        pessoaFunc.setData_nascimento(Calendar.getInstance());
+        pessoaFunc.setEmail("funcionario@mail.com");
+        pessoaFunc.setEndereco("Algum lugar, numero 0, Rua");
+        pessoaFunc.setNumero_celular("5499999999");
+        pessoaFunc.setRg("55555555555");
+        pessoaFunc.setSenha("123456");
+
+        persistencia.persist(pessoaFunc);
+
+        Funcionario func = new Funcionario();
+        func.setCargo(Cargo.valueOf("ATENDENTE"));
+        func.setNumero_ctps("123456789");
+        func.setNumero_pis("123456789");
+        func.setCpf(pessoaFunc.getCpf());
+
+        persistencia.persist(func);
+
+    }
+
+    @Test
+    public void testInsertAux() throws Exception{
+        PersistenciaJDBC persistencia = new PersistenciaJDBC();
+
+        Pessoa pessoaMedico = new Pessoa();
+        pessoaMedico.setTipo("M");
+        pessoaMedico.setCep("45678912");
+        pessoaMedico.setComplemento("Eh isso ai mesmo");
+        pessoaMedico.setNome("João");
+        pessoaMedico.setCpf("00000000000");
+        pessoaMedico.setData_nascimento(Calendar.getInstance());
+        pessoaMedico.setEmail("medico@mail.com");
+        pessoaMedico.setEndereco("Algum lugar, numero 0, Rua");
+        pessoaMedico.setNumero_celular("5499999999");
+        pessoaMedico.setRg("55555555555");
+        pessoaMedico.setSenha("123456");
+
+        persistencia.persist(pessoaMedico);
+
+        Pessoa pessoaCliente = new Pessoa();
+        pessoaCliente.setTipo("C");
+        pessoaCliente.setCep("45678912");
+        pessoaCliente.setComplemento("Eh isso ai mesmo");
+        pessoaCliente.setNome("Maria");
+        pessoaCliente.setCpf("11111111111");
+        pessoaCliente.setData_nascimento(Calendar.getInstance());
+        pessoaCliente.setEmail("medico@mail.com");
+        pessoaCliente.setEndereco("Algum lugar, numero 0, Rua");
+        pessoaCliente.setNumero_celular("5499999999");
+        pessoaCliente.setRg("55555555555");
+        pessoaCliente.setSenha("123456");
+
+        persistencia.persist(pessoaCliente);
+
+        Cliente cliente = new Cliente();
+        cliente.setCpf(pessoaCliente.getCpf());
+        cliente.setData_ultima_visita(Calendar.getInstance());
+
+        persistencia.persist(cliente);
+
+        Medico medico = new Medico();
+        medico.setNumero_crmv("123456789");
+        medico.setCpf(pessoaMedico.getCpf());
+
+        persistencia.persist(medico);
+
+        Especie especie = new Especie();
+        especie.setNome("Cachorro");
+
+        persistencia.persist(especie);
+
+        Raca raca = new Raca();
+        raca.setNome("Poodle");
+        raca.setEspecie(((Especie) persistencia.find(Especie.class, persistencia.ultimoId(Especie.class))));
+
+
+        persistencia.persist(raca);
+
+        Pet pet = new Pet();
+        pet.setRaca((Raca) persistencia.find(Raca.class, persistencia.ultimoId(Raca.class)));
+        Calendar data_nasc = Calendar.getInstance();
+        data_nasc.set(2015,10,25);
+        pet.setData_nascimento(data_nasc);
+        pet.setCliente((Cliente) persistencia.find(Cliente.class, persistencia.ultimoId(Cliente.class)));
+        pet.setObservacao("Esquema vacinal");
+        pet.setNome("Galadriel");
+
+        persistencia.persist(pet);
+
+    }
 }
