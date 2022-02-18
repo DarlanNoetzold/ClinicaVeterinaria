@@ -282,6 +282,5 @@ public class TestPersistenciaJDBC {
         pet.setNome("Galadriel");
 
         persistencia.persist(pet);
-
     }
 }
