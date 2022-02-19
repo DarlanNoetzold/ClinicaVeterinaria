@@ -26,7 +26,7 @@ public class JFramePrincipal extends JFrame implements WindowListener {
     private void initComponents(){
         //customização do JFrame
 
-        this.setTitle("Sisteminha para CRUD - CS::GO"); //seta o título do jframe
+        this.setTitle("Sisteminha para CRUD - Clinica Veterinaria"); //seta o título do jframe
 
         this.setMinimumSize(new Dimension(600,600)); //tamanho minimo quando for reduzido.
 
