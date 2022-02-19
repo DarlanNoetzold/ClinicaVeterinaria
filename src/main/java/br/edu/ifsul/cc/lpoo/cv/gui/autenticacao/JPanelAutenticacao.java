@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 
 public class JPanelAutenticacao extends JPanel implements ActionListener {
@@ -24,6 +25,8 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
     private JTextField txfCPF;
     private JPasswordField psfSenha;
     private JButton btnLogar;
+    private Border defaultBorder;
+
 
     //construtor da classe que recebe um parametro.
     public JPanelAutenticacao(Controle controle){
@@ -51,6 +54,7 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
         posicionador = new GridBagConstraints();
         posicionador.gridy = 0;//policao da linha (vertical)
         posicionador.gridx = 1;// posição da coluna (horizontal)
+        defaultBorder = txfCPF.getBorder();
         this.add(txfCPF, posicionador);//o add adiciona o rotulo no painel
 
         lblSenha = new JLabel("Senha:");
@@ -80,6 +84,19 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
         btnLogar.setActionCommand("comando_autenticar");
         this.add(btnLogar, posicionador);//o add adiciona o rotulo no painel
 
+    }
+    public void requestFocus(){
+
+        txfCPF.requestFocus();
+    }
+
+    public void cleanForm(){
+
+        txfCPF.setText("");
+        psfSenha.setText("");
+
+        txfCPF.setBorder(defaultBorder);
+        psfSenha.setBorder(defaultBorder);
     }
 
 
