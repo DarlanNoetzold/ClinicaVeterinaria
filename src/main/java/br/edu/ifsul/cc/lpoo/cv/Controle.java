@@ -1,4 +1,5 @@
 package br.edu.ifsul.cc.lpoo.cv;
+import br.edu.ifsul.cc.lpoo.cv.gui.funcionario.acessibilidade.JPanelAFuncionario;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 import br.edu.ifsul.cc.lpoo.cv.gui.JFramePrincipal;
 import br.edu.ifsul.cc.lpoo.cv.gui.JMenuBarHome;
@@ -13,12 +14,13 @@ public class Controle {
 
     private JFramePrincipal frame; // frame principal da minha aplicação gráfica
 
-    private JPanelAutenticacao pnlAutenticacao;
+    private JPanelAutenticacao pnlAutenticacao; //painel para a autenticacao do Funcionario.
 
     private JMenuBarHome menuBar; //menu principal
 
-    private JPanelHome pnlHome; // paine de boas vindas (home)
+    private JPanelHome pnlHome; // painel de boas vindas (home)
 
+    private JPanelAFuncionario pnlAFuncionario; // painel de manutencao para funcionario.
 
     //construtor.
     public Controle(){
@@ -29,9 +31,9 @@ public class Controle {
 
         conexaoJDBC = new PersistenciaJDBC();
 
-        if(conexaoJDBC!= null){
+        if(getConexaoJDBC()!= null){
 
-            return conexaoJDBC.conexaoAberta();
+            return getConexaoJDBC().conexaoAberta();
         }
 
         return false;
@@ -40,19 +42,13 @@ public class Controle {
     public void fecharBD(){
 
         System.out.println("Fechando conexao com o Banco de Dados");
-        conexaoJDBC.fecharConexao();
+        getConexaoJDBC().fecharConexao();
 
     }
 
     public void initComponents(){
 
-
-        //inicia a interface gráfica.
-        //"caminho feliz" : passo 5
-
         frame = new JFramePrincipal();
-
-
 
         pnlAutenticacao = new JPanelAutenticacao(this);
 
@@ -60,8 +56,11 @@ public class Controle {
 
         pnlHome = new JPanelHome(this);
 
-        frame.addTela(pnlAutenticacao, "tela_autenticacao");//carta 1
-        frame.addTela(pnlHome, "tela_home");//carta 2
+        pnlAFuncionario = new JPanelAFuncionario(this);
+
+        frame.addTela(pnlAutenticacao, "tela_autenticacao");
+        frame.addTela(pnlHome, "tela_home");
+        frame.addTela(pnlAFuncionario, "tela_funcionario");
 
         frame.showTela("tela_autenticacao"); // apreseta a carta cujo nome é "tela_autenticacao"
 
@@ -74,22 +73,17 @@ public class Controle {
 
         try{
 
-            Pessoa j =  conexaoJDBC.doLogin(cpf, senha);
+            Pessoa j =  getConexaoJDBC().doLogin(cpf, senha);
 
-            if(j != null || (j.getCpf() != null && j.getSenha() != null)){
-                if(j.getCpf() != null) {
-                    if(j.getSenha() != null) {
-                        JOptionPane.showMessageDialog(pnlAutenticacao, "Pessoa " + j.getCpf() + " autenticado com sucesso!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
+            if(j != null){
 
-                        frame.setJMenuBar(menuBar);//adiciona o menu de barra no frame
-                        frame.showTela("tela_home");//muda a tela para o painel de boas vindas (home)
-                    }else{
-                        JOptionPane.showMessageDialog(pnlAutenticacao, "Senha inválida!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }else{
-                    JOptionPane.showMessageDialog(pnlAutenticacao, "CPF inválido!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(pnlAutenticacao, "Funcionario "+j.getCpf()+" autenticado com sucesso!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
+
+                frame.setJMenuBar(menuBar);//adiciona o menu de barra no frame
+                frame.showTela("tela_home");//muda a tela para o painel de boas vindas (home)
+
             }else{
+
                 JOptionPane.showMessageDialog(pnlAutenticacao, "Dados inválidos!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
             }
 
@@ -102,10 +96,20 @@ public class Controle {
 
     public void showTela(String nomeTela){
 
+        if(nomeTela.equals("tela_autenticacao")){
 
-        frame.showTela(nomeTela);
+            pnlAutenticacao.cleanForm();
+            frame.showTela(nomeTela);
+            pnlAutenticacao.requestFocus();
+
+        }else{
+
+            frame.showTela(nomeTela);
+        }
+
     }
 
-
-
+    public PersistenciaJDBC getConexaoJDBC() {
+        return conexaoJDBC;
+    }
 }
