@@ -1,5 +1,7 @@
 package br.edu.ifsul.cc.lpoo.cv;
 import br.edu.ifsul.cc.lpoo.cv.gui.funcionario.acessibilidade.JPanelAFuncionario;
+import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
+import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 import br.edu.ifsul.cc.lpoo.cv.gui.JFramePrincipal;
 import br.edu.ifsul.cc.lpoo.cv.gui.JMenuBarHome;
@@ -92,6 +94,18 @@ public class Controle {
             JOptionPane.showMessageDialog(pnlAutenticacao, "Erro ao executar a autenticação no Banco de Dados!", "Autenticação", JOptionPane.ERROR_MESSAGE);
         }
 
+    }
+
+    public void cadastrar(Object o){
+        try {
+            if (o instanceof Pessoa) {
+                getConexaoJDBC().persist(o);
+            }else if(o instanceof Funcionario){
+                getConexaoJDBC().persist(o);
+            }
+        }catch (Exception e)   {
+            JOptionPane.showMessageDialog(pnlAutenticacao, "Erro ao executar o cadastro no Banco de Dados!", "Cadastro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void showTela(String nomeTela){
