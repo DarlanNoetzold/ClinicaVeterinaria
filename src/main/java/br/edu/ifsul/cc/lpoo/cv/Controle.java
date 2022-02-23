@@ -1,4 +1,5 @@
 package br.edu.ifsul.cc.lpoo.cv;
+import br.edu.ifsul.cc.lpoo.cv.gui.consulta.acessibilidade.JPanelAConsulta;
 import br.edu.ifsul.cc.lpoo.cv.gui.funcionario.acessibilidade.JPanelAFuncionario;
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
@@ -24,6 +25,7 @@ public class Controle {
 
     private JPanelAFuncionario pnlAFuncionario; // painel de manutencao para funcionario.
 
+    private JPanelAConsulta pnlAConsulta;
     //construtor.
     public Controle(){
 
@@ -60,9 +62,12 @@ public class Controle {
 
         pnlAFuncionario = new JPanelAFuncionario(this);
 
+        pnlAConsulta = new JPanelAConsulta(this);
+
         frame.addTela(pnlAutenticacao, "tela_autenticacao");
         frame.addTela(pnlHome, "tela_home");
         frame.addTela(pnlAFuncionario, "tela_funcionario");
+        frame.addTela(pnlAConsulta, "tela_consulta");
 
         frame.showTela("tela_autenticacao"); // apreseta a carta cujo nome é "tela_autenticacao"
 
