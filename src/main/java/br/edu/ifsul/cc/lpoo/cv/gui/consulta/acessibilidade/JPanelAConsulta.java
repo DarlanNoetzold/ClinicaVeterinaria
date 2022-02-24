@@ -11,7 +11,7 @@ public class JPanelAConsulta extends JPanel {
     private CardLayout cardLayout;
     private Controle controle;
     
-    private JPanelAJConsultaFormulario formulario;
+    private JPanelAConsultaFormulario formulario;
     private JPanelAConsultaListagem listagem;
     
     public JPanelAConsulta(Controle controle){
@@ -25,7 +25,7 @@ public class JPanelAConsulta extends JPanel {
         cardLayout = new CardLayout();
         this.setLayout(cardLayout);
         
-        formulario = new JPanelAJConsultaFormulario(this, controle);
+        formulario = new JPanelAConsultaFormulario(this, controle);
         listagem = new JPanelAConsultaListagem(this, controle);
         
         this.add(formulario, "tela_consulta_formulario");
