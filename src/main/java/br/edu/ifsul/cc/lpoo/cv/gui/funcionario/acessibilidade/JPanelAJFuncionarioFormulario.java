@@ -12,21 +12,24 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.*;
 
-public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListener{
-    
-    
+public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListener {
+
+
     private JPanelAFuncionario pnlAFuncionario;
     private Controle controle;
-    
+
     private BorderLayout borderLayout;
     private JTabbedPane tbpAbas;
-    
-    private JPanel pnlDadosCadastrais;    
+    private Funcionario funcionarioM;
+    private SimpleDateFormat format;
+
+    private JPanel pnlDadosCadastrais;
     private JPanel pnlCentroDadosCadastrais;
-    
+
     private GridBagLayout gridBagLayoutDadosCadastrais;
     private JLabel lblCpf;
     private JTextField txfCpf;
@@ -55,27 +58,106 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
     private JLabel lblSenha;
     private JPasswordField txfSenha;
 
-
-
     private JPanel pnlSul;
     private JButton btnGravar;
     private JButton btnCancelar;
-    
-    private JPanel pnlDadosConsultas;
-    private JPanel pnlDadosReceitas;
 
-    
-    
-    public JPanelAJFuncionarioFormulario(JPanelAFuncionario pnlAFuncionario, Controle controle){
-        
+
+    public JPanelAJFuncionarioFormulario(JPanelAFuncionario pnlAFuncionario, Controle controle) {
+
         this.pnlAFuncionario = pnlAFuncionario;
         this.controle = controle;
-        
+
         initComponents();
-        
+
     }
-    
-    private void initComponents(){
+
+    public Funcionario getFuncionariobyFormulario() {
+
+        //validacao do formulario
+        if (txfCpf.getText().trim().length() > 4 &&
+                new String(txfSenha.getPassword()).trim().length() > 3) {
+
+            Funcionario funcionario = new Funcionario();
+
+            funcionario.setCargo((Cargo) txfCargo.getSelectedItem());
+            funcionario.setNumero_pis(txfNumero_pis.getText());
+            funcionario.setNumero_ctps(txfNumero_ctps.getText());
+            funcionario.setCpf(txfCpf.getText());
+
+            return funcionario;
+        }
+
+        return null;
+    }
+
+    private Pessoa getPessoabyFormulario() {
+        //validacao do formulario
+        if (txfCpf.getText().trim().length() > 4 &&
+                new String(txfSenha.getPassword()).trim().length() > 3) {
+            Pessoa pessoa = new Pessoa();
+
+            pessoa.setCpf(txfCpf.getText());
+            pessoa.setSenha(String.valueOf(txfSenha.getPassword()));
+            pessoa.setRg(txfRg.getText());
+            pessoa.setEndereco(txfEndereco.getText());
+            pessoa.setEmail(txfEmail.getText());
+            pessoa.setNumero_celular(txfNumero_celular.getText());
+            pessoa.setNome(txfNome.getText());
+            pessoa.setComplemento(txfComplemento.getText());
+            pessoa.setData_cadastro(Calendar.getInstance());
+            pessoa.setData_nascimento(Calendar.getInstance());
+            pessoa.setCep(txfCep.getText());
+            pessoa.setTipo("F");
+
+            if (funcionarioM != null)
+                pessoa.setData_cadastro(funcionarioM.getData_cadastro());
+
+
+            return pessoa;
+        }
+
+        return null;
+    }
+
+    public void setFuncionarioFormulario(Funcionario funcionario) {
+        if(funcionario == null){
+            txfCpf.setText("");
+            txfRg.setText("");
+            txfCep.setText("");
+            txfComplemento.setText("");
+            txfData_nascimento.setText("");
+            txfEmail.setText("");
+            txfEndereco.setText("");
+            txfNome.setText("");
+            txfNumero_celular.setText("");
+            txfCargo.setSelectedIndex(0);
+            txfNumero_pis.setText("");
+            txfNumero_ctps.setText("");
+            txfSenha.setText("");
+            txfCpf.setEditable(true);
+            funcionarioM=null;
+        }else{
+            funcionarioM = funcionario;
+            txfCpf.setEditable(false);
+            txfCpf.setText(funcionarioM.getCpf());
+            txfRg.setText(funcionarioM.getRg());
+            txfCep.setText(funcionarioM.getCep());
+            txfComplemento.setText(funcionarioM.getComplemento());
+            txfData_nascimento.setText(format.format(funcionarioM.getData_nascimento().getTime()));
+            txfEmail.setText(funcionarioM.getEmail());
+            txfEndereco.setText(funcionarioM.getEndereco());
+            txfNome.setText(funcionarioM.getNome());
+            txfNumero_celular.setText(funcionarioM.getNumero_celular());
+            txfCargo.getModel().setSelectedItem(funcionarioM.getCargo());
+            txfNumero_pis.setText(funcionarioM.getNumero_pis());
+            txfNumero_ctps.setText(funcionarioM.getNumero_ctps());
+            txfSenha.setText(funcionarioM.getSenha());
+
+        }
+    }
+
+    private void initComponents() {
 
         borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
@@ -248,13 +330,6 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
 
         tbpAbas.addTab("Dados Cadastrais", pnlDadosCadastrais);
 
-        pnlDadosConsultas = new JPanel();
-        tbpAbas.addTab("Consultas", pnlDadosConsultas);
-
-
-        pnlDadosReceitas = new JPanel();
-        tbpAbas.addTab("Receitas", pnlDadosReceitas);
-
 
         pnlSul = new JPanel();
         pnlSul.setLayout(new FlowLayout());
@@ -282,36 +357,39 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        if(arg0.getActionCommand().equals(btnGravar.getActionCommand())){
-            Pessoa pessoa = new Pessoa();
-            pessoa.setCpf(txfCpf.getText());
-            pessoa.setSenha(String.valueOf(txfSenha.getPassword()));
-            pessoa.setRg(txfRg.getText());
-            pessoa.setEndereco(txfEndereco.getText());
-            pessoa.setEmail(txfEmail.getText());
-            pessoa.setNumero_celular(txfNumero_celular.getText());
-            pessoa.setNome(txfNome.getText());
-            pessoa.setComplemento(txfComplemento.getText());
-            pessoa.setData_cadastro(Calendar.getInstance());
-            pessoa.setData_nascimento(Calendar.getInstance());
-            pessoa.setCep(txfCep.getText());
-            pessoa.setTipo("F");
 
-            controle.cadastrar(pessoa);
+        if (arg0.getActionCommand().equals(btnGravar.getActionCommand())) {
+            Funcionario f = getFuncionariobyFormulario();
+            Pessoa p = getPessoabyFormulario();
 
-            Funcionario funcionario = new Funcionario();
-            funcionario.setCargo((Cargo) txfCargo.getSelectedItem());
-            funcionario.setNumero_pis(txfNumero_pis.getText());
-            funcionario.setNumero_ctps(txfNumero_ctps.getText());
-            funcionario.setCpf(pessoa.getCpf());
+            if (p != null && f != null) {
 
-            controle.cadastrar(funcionario);
+                try {
+
+                    pnlAFuncionario.getControle().getConexaoJDBC().persist(p);
+                    pnlAFuncionario.getControle().getConexaoJDBC().persist(f);
+
+                    JOptionPane.showMessageDialog(this, "Funcionario e Pessoa armazenados!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
+
+                    pnlAFuncionario.showTela("tela_funcionario_listagem");
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar Jogador! : " + ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            } else {
+
+                JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+
+        } else if (arg0.getActionCommand().equals(btnCancelar.getActionCommand())) {
+
 
             pnlAFuncionario.showTela("tela_funcionario_listagem");
-            
-            
-        }else if(arg0.getActionCommand().equals(btnCancelar.getActionCommand())){
-            
+
         }
     }
+
+
 }

@@ -34,14 +34,18 @@ public class JPanelAFuncionario extends JPanel {
     }
     
     public void showTela(String nomeTela){
-        
+        if(nomeTela.equals("tela_funcionario_listagem")){
+            listagem.populaTable();
+        }
         cardLayout.show(this, nomeTela);
     }
 
     public Controle getControle() {
         return controle;
     }
-    
-    
+
+    public JPanelAJFuncionarioFormulario getFormulario() {
+        return formulario;
+    }
     
 }

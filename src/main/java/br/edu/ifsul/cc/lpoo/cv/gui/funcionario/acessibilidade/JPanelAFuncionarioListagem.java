@@ -2,17 +2,16 @@
 package br.edu.ifsul.cc.lpoo.cv.gui.funcionario.acessibilidade;
 
 import br.edu.ifsul.cc.lpoo.cv.Controle;
+import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -36,14 +35,36 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
     private JButton btnNovo;
     private JButton btnAlterar;
     private JButton btnRemover;
-    
-    
+
+    private SimpleDateFormat format;
+
+
     public JPanelAFuncionarioListagem(JPanelAFuncionario pnlAFuncionario, Controle controle){
         
         this.pnlAFuncionario = pnlAFuncionario;
         this.controle = controle;
         
         initComponents();
+    }
+
+    public void populaTable(){
+
+        DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();//recuperacao do modelo da tabela
+
+        model.setRowCount(0);//elimina as linhas existentes (reset na tabela)
+        try {
+            List<Funcionario> listFuncionarios = controle.getConexaoJDBC().listFuncionario();
+            for(Funcionario f : listFuncionarios){
+                System.out.println("teste listagem");
+                model.addRow(new Object[]{f, f.getCargo(), f.getNumero_ctps(), f.getNumero_pis()});
+            }
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(this, "Erro ao listar Funcionarios -:"+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+
     }
     
     private void initComponents(){
@@ -85,14 +106,11 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
         scpListagem.setViewportView(tblListagem);
     
         pnlCentro.add(scpListagem, BorderLayout.CENTER);
-    
-        
+
+
         this.add(pnlCentro, BorderLayout.CENTER);//adiciona o painel na posicao norte.
         
-        
 
-        
-        
         
         pnlSul = new JPanel();
         pnlSul.setLayout(new FlowLayout());
@@ -132,9 +150,11 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
     public void actionPerformed(ActionEvent arg0) {
     
         if(arg0.getActionCommand().equals(btnNovo.getActionCommand())){
-            
+
             pnlAFuncionario.showTela("tela_funcionario_formulario");
-            
+
+            pnlAFuncionario.getFormulario().setFuncionarioFormulario(null);
+
         }else if(arg0.getActionCommand().equals(btnAlterar.getActionCommand())){
             
             
