@@ -122,7 +122,7 @@ public class Controle {
             pnlAutenticacao.requestFocus();
 
         }else{
-
+            pnlAFuncionario.showTela("tela_funcionario_listagem");
             frame.showTela(nomeTela);
         }
 
