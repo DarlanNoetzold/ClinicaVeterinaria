@@ -678,4 +678,23 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
     }
 
+    public List<Funcionario> listFuncionario() throws SQLException {
+        List<Funcionario> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("select cargo, numero_ctps, numero_pis, cpf from tb_funcionario");
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList<>();
+        while (rs.next()) {
+            Funcionario func = new Funcionario();
+            func.setCpf(rs.getString("cpf"));
+            func.setCargo(Cargo.valueOf(rs.getString("cargo").toUpperCase()));
+            func.setNumero_ctps(rs.getString("numero_ctps"));
+            func.setNumero_pis(rs.getString("numero_pis"));
+
+            lista.add(func);
+        }
+        return lista;
+    }
 }
