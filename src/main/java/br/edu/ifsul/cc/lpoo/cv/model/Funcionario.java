@@ -44,4 +44,9 @@ public class Funcionario extends Pessoa implements Serializable {
     public void setCargo(Cargo cargo) {
         this.cargo = cargo;
     }
+
+    @Override
+    public String toString() {
+        return super.getCpf();
+    }
 }
