@@ -11,7 +11,7 @@ public class JPanelAConsulta extends JPanel {
     private CardLayout cardLayout;
     private Controle controle;
     
-    private JPanelAConsultaFormulario consulta;
+    private JPanelAConsultaFormulario formulario;
     private JPanelAConsultaListagem listagem;
     
     public JPanelAConsulta(Controle controle){
@@ -24,19 +24,24 @@ public class JPanelAConsulta extends JPanel {
         
         cardLayout = new CardLayout();
         this.setLayout(cardLayout);
-        
-        consulta = new JPanelAConsultaFormulario(this, controle);
+
+        formulario = new JPanelAConsultaFormulario(this, controle);
         listagem = new JPanelAConsultaListagem(this, controle);
         
-        this.add(consulta, "tela_consulta_formulario");
+        this.add(formulario, "tela_consulta_formulario");
         this.add(listagem, "tela_consulta_listagem");
-        
+        listagem.populaTable();
         cardLayout.show(this, "tela_consulta_listagem");
     }
     
     public void showTela(String nomeTela){
         if(nomeTela.equals("tela_consulta_listagem")){
+            System.out.println("testeeee");
             listagem.populaTable();
+        }else if(nomeTela.equals("tela_consulta_formulario")){
+
+            getFormulario().populaComboMedico();
+            getFormulario().populaComboPet();
         }
         cardLayout.show(this, nomeTela);
     }
@@ -45,8 +50,8 @@ public class JPanelAConsulta extends JPanel {
         return controle;
     }
 
-    public JPanelAConsultaFormulario getConsulta() {
-        return consulta;
+    public JPanelAConsultaFormulario getFormulario() {
+        return formulario;
     }
 
 

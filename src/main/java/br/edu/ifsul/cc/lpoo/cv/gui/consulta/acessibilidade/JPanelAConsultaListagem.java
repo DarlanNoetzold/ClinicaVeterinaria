@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Vector;
 
 
 public class JPanelAConsultaListagem extends JPanel implements ActionListener{
@@ -52,11 +53,10 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         try {
             List<Consulta> listConsultas = controle.getConexaoJDBC().listPesistenciaConsulta();
             for(Consulta c : listConsultas){
-                model.addRow(new Object[]{c.getId(),c.getMedico().getCpf(), c.getPet().getNome()});
+                model.addRow(new Object[]{c,c.getMedico().getCpf(), c.getPet().getNome()});
             }
 
         } catch (Exception ex) {
-
             JOptionPane.showMessageDialog(this, "Erro ao listar Consultas -:"+ex.getLocalizedMessage(), "Consulta", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         pnlNorte = new JPanel();
         pnlNorte.setLayout(new FlowLayout());
         
-        lblFiltro = new JLabel("Filtrar por Nickname:");
+        lblFiltro = new JLabel("Filtrar por Id:");
         pnlNorte.add(lblFiltro);
         
         txfFiltro = new JTextField(20);
@@ -95,7 +95,7 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         
         modeloTabela = new DefaultTableModel(
             new String [] {
-                "Id", "Cargo", "CPF Médico", "Nome do Pet"
+                "Id", "CPF Médico", "Nome do Pet"
             }, 0);
         
         tblListagem.setModel(modeloTabela);
@@ -105,11 +105,6 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
     
         
         this.add(pnlCentro, BorderLayout.CENTER);//adiciona o painel na posicao norte.
-        
-        
-
-        
-        
         
         pnlSul = new JPanel();
         pnlSul.setLayout(new FlowLayout());
@@ -151,12 +146,46 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         if(arg0.getActionCommand().equals(btnNovo.getActionCommand())){
             
             pnlAConsulta.showTela("tela_consulta_formulario");
+            pnlAConsulta.getFormulario().setConsultaFormulario(null);
             
         }else if(arg0.getActionCommand().equals(btnAlterar.getActionCommand())){
-            
-            
+            int indice = tblListagem.getSelectedRow();//recupera a linha selecionada
+            if(indice > -1){
+
+                DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel(); //recuperacao do modelo da table
+
+                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
+
+                Consulta c = (Consulta) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
+
+                pnlAConsulta.showTela("tela_consulta_formulario");
+                pnlAConsulta.getFormulario().setConsultaFormulario(c);
+            }else{
+                JOptionPane.showMessageDialog(this, "Selecione uma linha para editar!", "Edição", JOptionPane.INFORMATION_MESSAGE);
+            }
         }else if(arg0.getActionCommand().equals(btnRemover.getActionCommand())){
-            
+            int indice = tblListagem.getSelectedRow();//recupera a linha selecionada
+            if(indice > -1){
+
+                DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel(); //recuperacao do modelo da table
+
+                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
+
+                Consulta c = (Consulta) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
+
+                try {
+                    pnlAConsulta.getControle().getConexaoJDBC().remover(c);
+                    JOptionPane.showMessageDialog(this, "Consulta removido!", "Jogador", JOptionPane.INFORMATION_MESSAGE);
+                    populaTable(); //refresh na tabela
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao remover Jogador -:"+ex.getLocalizedMessage(), "Jogadores", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+
+            }else{
+                JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
+            }
             
         }
     
