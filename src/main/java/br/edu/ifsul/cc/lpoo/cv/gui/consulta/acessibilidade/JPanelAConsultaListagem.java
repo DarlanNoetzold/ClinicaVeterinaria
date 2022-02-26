@@ -2,6 +2,8 @@
 package br.edu.ifsul.cc.lpoo.cv.gui.consulta.acessibilidade;
 
 import br.edu.ifsul.cc.lpoo.cv.Controle;
+import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
+import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 
 public class JPanelAConsultaListagem extends JPanel implements ActionListener{
@@ -39,6 +42,25 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         this.controle = controle;
         
         initComponents();
+    }
+
+    public void populaTable(){
+
+        DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();//recuperacao do modelo da tabela
+
+        model.setRowCount(0);//elimina as linhas existentes (reset na tabela)
+        try {
+            List<Consulta> listConsultas = controle.getConexaoJDBC().listPesistenciaConsulta();
+            for(Consulta c : listConsultas){
+                model.addRow(new Object[]{c.getId(),c.getMedico().getCpf(), c.getPet().getNome()});
+            }
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(this, "Erro ao listar Consultas -:"+ex.getLocalizedMessage(), "Consulta", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+
     }
     
     private void initComponents(){
