@@ -2,6 +2,7 @@ package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "tb_funcionario")
@@ -17,6 +18,10 @@ public class Funcionario extends Pessoa implements Serializable {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Cargo cargo;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar data_cadastro_Funcionario;
 
     public Funcionario() {
     }
@@ -43,6 +48,14 @@ public class Funcionario extends Pessoa implements Serializable {
 
     public void setCargo(Cargo cargo) {
         this.cargo = cargo;
+    }
+
+    public Calendar getData_cadastro_Funcionario() {
+        return data_cadastro_Funcionario;
+    }
+
+    public void setData_cadastro_Funcionario(Calendar data_cadastro_Funcionario) {
+        this.data_cadastro_Funcionario = data_cadastro_Funcionario;
     }
 
     @Override

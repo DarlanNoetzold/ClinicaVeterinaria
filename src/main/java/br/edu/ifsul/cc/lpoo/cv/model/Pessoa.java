@@ -3,6 +3,7 @@ package br.edu.ifsul.cc.lpoo.cv.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 
 @Entity
 @Table(name = "tb_pessoa")
