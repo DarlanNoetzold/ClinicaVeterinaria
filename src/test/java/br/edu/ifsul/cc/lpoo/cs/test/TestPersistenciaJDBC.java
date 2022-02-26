@@ -146,7 +146,7 @@ public class TestPersistenciaJDBC {
                 persistencia.persist(consulta2);
 
                 //Receitas da consulta 01
-                consulta1.setId(3);
+                consulta1.setId(1);
                 Receita receita1 = new Receita();
                 receita1.setConsulta(consulta1);
                 receita1.setOrientacao("Vacina 01");
@@ -283,4 +283,5 @@ public class TestPersistenciaJDBC {
 
         persistencia.persist(pet);
     }
+
 }
