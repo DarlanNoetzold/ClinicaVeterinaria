@@ -738,4 +738,49 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         }
         return lista;
     }
+
+    public List<Medico> listMedico() throws SQLException {
+        List<Medico> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("select data_cadastro_medico, numero_crmv, cpf from tb_medico");
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList<>();
+        while (rs.next()) {
+            Medico med = new Medico();
+            med.setCpf(rs.getString("cpf"));
+            med.setNumero_crmv(rs.getString("numero_crmv"));
+            Calendar dtU = Calendar.getInstance();
+            dtU.setTimeInMillis(rs.getDate("data_cadastro_medico").getTime());
+            med.setData_cadastro_Medico(dtU);
+
+            lista.add(med);
+        }
+        return lista;
+    }
+
+    public List<Pet> listPet() throws Exception {
+        List<Pet> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("select id, data_nascimento, nome, observacao, cliente_id, raca_id from tb_pet");
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList<>();
+        while (rs.next()) {
+            Pet p = new Pet();
+            p.setId(rs.getInt("id"));
+            Calendar dtU = Calendar.getInstance();
+            dtU.setTimeInMillis(rs.getDate("data_nascimento").getTime());
+            p.setData_nascimento(dtU);
+            p.setNome(rs.getString("nome"));
+            p.setObservacao(rs.getString("observacao"));
+            p.setCliente((Cliente) find(Cliente.class, rs.getString("cliente_id")));
+            p.setRaca((Raca) find(Raca.class, rs.getInt("raca_id")));
+
+            lista.add(p);
+        }
+        return lista;
+    }
 }
