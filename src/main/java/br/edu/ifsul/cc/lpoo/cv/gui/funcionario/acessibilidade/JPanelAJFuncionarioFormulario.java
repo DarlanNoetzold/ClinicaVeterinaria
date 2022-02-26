@@ -12,6 +12,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
     private BorderLayout borderLayout;
     private JTabbedPane tbpAbas;
     private Funcionario funcionarioM;
+    private Pessoa pessoaM;
     private SimpleDateFormat format;
 
     private JPanel pnlDadosCadastrais;
@@ -83,6 +85,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             funcionario.setCargo((Cargo) txfCargo.getSelectedItem());
             funcionario.setNumero_pis(txfNumero_pis.getText());
             funcionario.setNumero_ctps(txfNumero_ctps.getText());
+            funcionario.setData_cadastro_Funcionario(Calendar.getInstance());
             funcionario.setCpf(txfCpf.getText());
 
             return funcionario;
@@ -91,7 +94,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
         return null;
     }
 
-    private Pessoa getPessoabyFormulario() {
+    private Pessoa getPessoabyFormulario() throws ParseException {
         //validacao do formulario
         if (txfCpf.getText().trim().length() > 4 &&
                 new String(txfSenha.getPassword()).trim().length() > 3) {
@@ -106,7 +109,9 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             pessoa.setNome(txfNome.getText());
             pessoa.setComplemento(txfComplemento.getText());
             pessoa.setData_cadastro(Calendar.getInstance());
-            pessoa.setData_nascimento(Calendar.getInstance());
+            Calendar c = Calendar.getInstance();
+            c.setTime(format.parse(txfData_nascimento.getText()));
+            pessoa.setData_nascimento(c);
             pessoa.setCep(txfCep.getText());
             pessoa.setTipo("F");
 
@@ -137,22 +142,28 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             txfSenha.setText("");
             txfCpf.setEditable(true);
             funcionarioM=null;
+            pessoaM = null;
         }else{
             funcionarioM = funcionario;
+            try {
+                pessoaM = (Pessoa) controle.getConexaoJDBC().find(Pessoa.class, funcionario.getCpf());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             txfCpf.setEditable(false);
-            txfCpf.setText(funcionarioM.getCpf());
-            txfRg.setText(funcionarioM.getRg());
-            txfCep.setText(funcionarioM.getCep());
-            txfComplemento.setText(funcionarioM.getComplemento());
-            txfData_nascimento.setText(format.format(funcionarioM.getData_nascimento().getTime()));
-            txfEmail.setText(funcionarioM.getEmail());
-            txfEndereco.setText(funcionarioM.getEndereco());
-            txfNome.setText(funcionarioM.getNome());
-            txfNumero_celular.setText(funcionarioM.getNumero_celular());
+            txfCpf.setText(pessoaM.getCpf());
+            txfRg.setText(pessoaM.getRg());
+            txfCep.setText(pessoaM.getCep());
+            txfComplemento.setText(pessoaM.getComplemento());
+            txfEmail.setText(pessoaM.getEmail());
+            txfEndereco.setText(pessoaM.getEndereco());
+            txfNome.setText(pessoaM.getNome());
+            txfNumero_celular.setText(pessoaM.getNumero_celular());
+            txfData_nascimento.setText(format.format(pessoaM.getData_nascimento().getTime()));
             txfCargo.getModel().setSelectedItem(funcionarioM.getCargo());
             txfNumero_pis.setText(funcionarioM.getNumero_pis());
             txfNumero_ctps.setText(funcionarioM.getNumero_ctps());
-            txfSenha.setText(funcionarioM.getSenha());
+            txfSenha.setText(pessoaM.getSenha());
 
         }
     }
@@ -353,6 +364,8 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
 
         this.add(pnlSul, BorderLayout.SOUTH);
 
+        format = new SimpleDateFormat("dd/MM/yyyy");
+
     }
 
     @Override
@@ -360,7 +373,13 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
 
         if (arg0.getActionCommand().equals(btnGravar.getActionCommand())) {
             Funcionario f = getFuncionariobyFormulario();
-            Pessoa p = getPessoabyFormulario();
+            Pessoa p = null;
+            try {
+                p = getPessoabyFormulario();
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar Funcionario! : " + ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
 
             if (p != null && f != null) {
 
@@ -374,7 +393,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
                     pnlAFuncionario.showTela("tela_funcionario_listagem");
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao salvar Jogador! : " + ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar Funcionario! : " + ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             } else {
