@@ -3,6 +3,7 @@ package br.edu.ifsul.cc.lpoo.cv.gui.funcionario.acessibilidade;
 
 import br.edu.ifsul.cc.lpoo.cv.Controle;
 import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
+import br.edu.ifsul.cc.lpoo.cv.model.Pessoa;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -55,8 +57,7 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
         try {
             List<Funcionario> listFuncionarios = controle.getConexaoJDBC().listFuncionario();
             for(Funcionario f : listFuncionarios){
-                System.out.println("teste listagem");
-                model.addRow(new Object[]{f, f.getCargo(), f.getNumero_ctps(), f.getNumero_pis()});
+                model.addRow(new Object[]{f, f.getCargo(), f.getNumero_ctps(), f.getNumero_pis(), format.format(f.getData_cadastro_Funcionario().getTime())});
             }
 
         } catch (Exception ex) {
@@ -99,7 +100,7 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
         
         modeloTabela = new DefaultTableModel(
             new String [] {
-                "CPF", "Cargo", "Numero CTPS", "Numero PIS"
+                "CPF", "Cargo", "Numero CTPS", "Numero PIS", "Data Cadastro"
             }, 0);
         
         tblListagem.setModel(modeloTabela);
@@ -142,6 +143,8 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
         
         
         this.add(pnlSul, BorderLayout.SOUTH);//adiciona o painel na posicao norte.
+
+        format = new SimpleDateFormat("dd/MM/yyyy");
       
         
     }
@@ -154,16 +157,45 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
             pnlAFuncionario.showTela("tela_funcionario_formulario");
 
             pnlAFuncionario.getFormulario().setFuncionarioFormulario(null);
+        }else if(arg0.getActionCommand().equals(btnAlterar.getActionCommand())) {
 
-        }else if(arg0.getActionCommand().equals(btnAlterar.getActionCommand())){
-            
-            
-        }else if(arg0.getActionCommand().equals(btnRemover.getActionCommand())){
-            
-            
+            int indice = tblListagem.getSelectedRow();//recupera a linha selecionada
+            if (indice > -1) {
+
+                DefaultTableModel model = (DefaultTableModel) tblListagem.getModel(); //recuperacao do modelo da table
+
+                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
+
+                Funcionario f = (Funcionario) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
+
+                pnlAFuncionario.showTela("tela_funcionario_formulario");
+                pnlAFuncionario.getFormulario().setFuncionarioFormulario(f);
+                populaTable();
+            }else{
+                JOptionPane.showMessageDialog(this, "Selecione uma linha para editar!", "Edição", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }else if (arg0.getActionCommand().equals(btnRemover.getActionCommand())) {
+            int indice = tblListagem.getSelectedRow();//recupera a linha selecionada
+            if(indice > -1){
+
+                DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel(); //recuperacao do modelo da table
+
+                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
+
+                Funcionario f = (Funcionario) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
+                try {
+                    pnlAFuncionario.getControle().getConexaoJDBC().remover(f);
+                    JOptionPane.showMessageDialog(this, "Funcionario removido!", "Funcionario", JOptionPane.INFORMATION_MESSAGE);
+                    populaTable(); //refresh na tabela
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao remover Funcionario -:"+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+
+            }else{
+                JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-    
-    
     }
-    
 }
