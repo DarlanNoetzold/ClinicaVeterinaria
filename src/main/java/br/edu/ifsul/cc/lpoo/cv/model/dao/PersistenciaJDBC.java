@@ -74,7 +74,36 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 return con;
             }
 
-        } else if (c == Medico.class) {
+        } else if(c == Pessoa.class){
+
+            PreparedStatement ps = this.con.prepareStatement("select cpf, rg, nome, senha, numero_celular, email, data_cadastro, data_nascimento, cep, endereco, complemento from tb_pessoa where cpf = ?");
+
+            ps.setString(1, id.toString());
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+
+                Pessoa p = new Pessoa();
+                p.setCpf(rs.getString("cpf"));
+                p.setRg(rs.getString("rg"));
+                p.setNome(rs.getString("nome"));
+                p.setSenha(rs.getString("senha"));
+                p.setNumero_celular(rs.getString("numero_celular"));
+                p.setEmail(rs.getString("email"));
+                Calendar dc = Calendar.getInstance();
+                dc.setTimeInMillis(rs.getDate("data_cadastro").getTime());
+                p.setData_cadastro(dc);
+                Calendar dn = Calendar.getInstance();
+                dn.setTimeInMillis(rs.getDate("data_nascimento").getTime());
+                p.setData_nascimento(dn);
+                p.setCep(rs.getString("cep"));
+                p.setEndereco(rs.getString("endereco"));
+                p.setComplemento(rs.getString("complemento"));
+
+                ps.close();
+                return p;
+            }
+        }else if (c == Medico.class) {
             PreparedStatement ps = this.con.prepareStatement("select numero_crmv, cpf from tb_medico where cpf = ?");
             ps.setString(1, id.toString());
             ResultSet rsMedico = ps.executeQuery();
@@ -320,11 +349,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         }else if (o instanceof Funcionario) {
             Funcionario c = (Funcionario) o;
 
-            if (c.getData_cadastro() == null) {
+            if (c.getData_cadastro_Funcionario() == null) {
                 System.out.println("Iniciando Insert de Funcionario...");
                 PreparedStatement ps = this.con.prepareStatement("insert into tb_funcionario "
-                        + "(cargo,numero_ctps, numero_pis, cpf) values "
-                        + "(?,?,?,?)");
+                        + "(cargo,numero_ctps, numero_pis, cpf, data_cadastro_funcionario) values "
+                        + "(?,?,?,?, now())");
                 ps.setString(1, c.getCargo().toString());
                 ps.setString(2, c.getNumero_ctps());
                 ps.setString(3, c.getNumero_pis());
@@ -332,11 +361,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 ps.executeUpdate();
             } else {
-                System.out.println("Iniciando Update de Cliente...");
+                System.out.println("Iniciando Update de Funcionario...");
                 PreparedStatement ps = this.con.prepareStatement("update tb_funcionario set "
                         + "cargo = ?, "
                         + "numero_ctps = ?, "
-                        + "numero_pis = ?, "
+                        + "numero_pis = ? "
                         + "where cpf = ?");
                 ps.setString(1, c.getCargo().toString());
                 ps.setString(2, c.getNumero_ctps());
@@ -421,7 +450,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 System.out.println("Inciando Update de Pessoa...");
                 PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
                         + "tipo = ?, "
-                        + "cpf = ?, "
                         + "cep = ?, "
                         + "complemento = ?, "
                         + "data_nascimento = ?, "
@@ -434,19 +462,18 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                         + "data_cadastro = now()"
                         + "where cpf = ?");
                 ps.setString(1, p.getTipo());
-                ps.setString(2, p.getCpf());
-                ps.setString(3, p.getCep());
-                ps.setString(4, p.getComplemento());
+                ps.setString(2, p.getCep());
+                ps.setString(3, p.getComplemento());
                 Date dtU = new Date(System.currentTimeMillis());
                 dtU.setTime(p.getData_nascimento().getTimeInMillis());
-                ps.setDate(5, dtU);
-                ps.setString(6, p.getEmail());
-                ps.setString(7, p.getEndereco());
-                ps.setString(8, p.getNome());
-                ps.setString(9, p.getNumero_celular());
-                ps.setString(10, p.getRg());
-                ps.setString(11, p.getSenha());
-                ps.setString(12, p.getCpf());
+                ps.setDate(4, dtU);
+                ps.setString(5, p.getEmail());
+                ps.setString(6, p.getEndereco());
+                ps.setString(7, p.getNome());
+                ps.setString(8, p.getNumero_celular());
+                ps.setString(9, p.getRg());
+                ps.setString(10, p.getSenha());
+                ps.setString(11, p.getCpf());
                 ps.execute();
             }
         }
@@ -471,40 +498,51 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             ps.setInt(1, r.getId());
             ps.execute();
 
-        }else if (o instanceof Medico) {
+        } else if (o instanceof Medico) {
             Medico m = (Medico) o;
 
             PreparedStatement ps = this.con.prepareStatement("delete from tb_medico where cpf = ?");
             ps.setString(1, m.getCpf());
             ps.execute();
 
-        }else if (o instanceof Cliente) {
+        } else if (o instanceof Cliente) {
             Cliente c = (Cliente) o;
 
             PreparedStatement ps = this.con.prepareStatement("delete from tb_cliente where cpf = ?");
             ps.setString(1, c.getCpf());
             ps.execute();
 
-        }else if (o instanceof Pet) {
+        } else if (o instanceof Pet) {
             Pet p = (Pet) o;
 
             PreparedStatement ps = this.con.prepareStatement("delete from tb_pet where id = ?");
             ps.setInt(1, p.getId());
             ps.execute();
 
-        }else if (o instanceof Raca) {
+        } else if (o instanceof Raca) {
             Raca r = (Raca) o;
 
             PreparedStatement ps = this.con.prepareStatement("delete from tb_raca where id = ?");
             ps.setInt(1, r.getId());
             ps.execute();
 
-        }else if (o instanceof Especie) {
+        } else if (o instanceof Especie) {
             Especie e = (Especie) o;
 
             PreparedStatement ps = this.con.prepareStatement("delete from tb_especie where id = ?");
             ps.setInt(1, e.getId());
             ps.execute();
+
+        }else if (o instanceof Funcionario) {
+            Funcionario f = (Funcionario) o;
+
+            PreparedStatement ps = this.con.prepareStatement("delete from tb_funcionario where cpf = ?");
+            ps.setString(1, f.getCpf());
+            ps.execute();
+
+            PreparedStatement psPessoa = this.con.prepareStatement("delete from tb_pessoa where cpf = ?");
+            psPessoa.setString(1, f.getCpf());
+            psPessoa.execute();
 
         }
     }
@@ -681,7 +719,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     public List<Funcionario> listFuncionario() throws SQLException {
         List<Funcionario> lista = null;
 
-        PreparedStatement ps = this.con.prepareStatement("select cargo, numero_ctps, numero_pis, cpf from tb_funcionario");
+        PreparedStatement ps = this.con.prepareStatement("select cargo, numero_ctps, numero_pis, cpf, data_cadastro_funcionario from tb_funcionario");
 
         ResultSet rs = ps.executeQuery();
 
@@ -692,6 +730,9 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             func.setCargo(Cargo.valueOf(rs.getString("cargo").toUpperCase()));
             func.setNumero_ctps(rs.getString("numero_ctps"));
             func.setNumero_pis(rs.getString("numero_pis"));
+            Calendar dtU = Calendar.getInstance();
+            dtU.setTimeInMillis(rs.getDate("data_cadastro_funcionario").getTime());
+            func.setData_cadastro_Funcionario(dtU);
 
             lista.add(func);
         }
