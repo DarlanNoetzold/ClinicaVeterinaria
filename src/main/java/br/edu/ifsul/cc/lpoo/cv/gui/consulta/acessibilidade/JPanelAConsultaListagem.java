@@ -95,7 +95,7 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         
         modeloTabela = new DefaultTableModel(
             new String [] {
-                "CPF", "Cargo", "Numero CTPS", "Numero PIS"
+                "Id", "Cargo", "CPF Médico", "Nome do Pet"
             }, 0);
         
         tblListagem.setModel(modeloTabela);
