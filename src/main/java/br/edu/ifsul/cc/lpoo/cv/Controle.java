@@ -121,8 +121,11 @@ public class Controle {
             frame.showTela(nomeTela);
             pnlAutenticacao.requestFocus();
 
-        }else{
+        }else if(nomeTela.equals("tela_funcionario")){
             pnlAFuncionario.showTela("tela_funcionario_listagem");
+            frame.showTela(nomeTela);
+        }else if(nomeTela.equals("tela_consulta")){
+            pnlAFuncionario.showTela("tela_consulta_listagem");
             frame.showTela(nomeTela);
         }
 

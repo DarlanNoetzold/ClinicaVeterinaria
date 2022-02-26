@@ -35,4 +35,9 @@ public class Medico extends Pessoa implements Serializable {
     public void setData_cadastro_Medico(Calendar data_cadastro) {
         this.data_cadastro_Medico = data_cadastro;
     }
+
+    @Override
+    public String toString() {
+        return super.getCpf();
+    }
 }

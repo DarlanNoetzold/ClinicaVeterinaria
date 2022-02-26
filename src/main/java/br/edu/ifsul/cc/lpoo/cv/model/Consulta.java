@@ -57,4 +57,9 @@ public class Consulta implements Serializable {
     public void setReceitas(List<Receita> receitas) {
         this.receitas = receitas;
     }
+
+    @Override
+    public String toString() {
+        return getId().toString();
+    }
 }
