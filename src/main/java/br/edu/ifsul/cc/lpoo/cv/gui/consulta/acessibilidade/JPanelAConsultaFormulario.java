@@ -4,8 +4,10 @@ import br.edu.ifsul.cc.lpoo.cv.Controle;
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 import br.edu.ifsul.cc.lpoo.cv.model.Pet;
+import br.edu.ifsul.cc.lpoo.cv.model.Receita;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,10 +25,13 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
     private JTabbedPane tbpAbas;
 
     private JPanel pnlDadosConsultas;
+    private JPanel pnlDadosReceita;
 
     private GridBagLayout gridBagLayoutDadosCadastrais;
     private JLabel lblId;
     private JTextField txfId;
+    private JLabel lblOrientacao;
+    private JTextField txfOrientacao;
 
     private JLabel lblMedico;
     private JComboBox cbxMedico;
@@ -39,10 +44,14 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
 
     private JPanel pnlSul;
     private JButton btnGravar;
+    private JButton btnGravarReceita;
     private JButton btnCancelar;
 
     private Consulta consultaM;
 
+    private JScrollPane scpListagem;
+    private JTable tblListagem;
+    private DefaultTableModel modeloTabela;
 
     
     
@@ -53,6 +62,28 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
         
         initComponents();
         
+    }
+
+    public void populaTableReceitas(){
+
+        DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();
+
+        model.setRowCount(0);
+
+        try {
+
+            List<Receita> listReceitas = controle.getConexaoJDBC().listReceitasDeConsulta(consultaM);
+            for(Receita r : listReceitas){
+
+                model.addRow(new Object[]{r,r.getOrientacao(),r.getConsulta().getId()});
+            }
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(this, "Erro ao listar Receitas -:"+ex.getLocalizedMessage(), "Receitas", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+
     }
 
     public void populaComboMedico(){
@@ -99,6 +130,14 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
         }
 
 
+    }
+
+    private Receita getReceitaDeConsultabyFormulario() {
+        Receita c = new Receita();
+        c.setOrientacao(txfOrientacao.getText());
+        c.setConsulta(consultaM);
+
+        return c;
     }
 
     private Consulta getConsultabyFormulario() {
@@ -183,6 +222,44 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
 
         tbpAbas.addTab("Consulta", pnlDadosConsultas);
 
+        pnlDadosReceita = new JPanel();
+        scpListagem = new JScrollPane();
+        tblListagem =  new JTable();
+
+        modeloTabela = new DefaultTableModel(
+                new String [] {
+                        "Id", "Orientacao", "Consulta Id"
+                }, 0);
+
+        tblListagem.setModel(modeloTabela);
+        scpListagem.setViewportView(tblListagem);
+
+        pnlDadosReceita.add(scpListagem, BorderLayout.CENTER);
+
+        lblOrientacao = new JLabel("Orientação:");
+        posicionador = new GridBagConstraints();
+        posicionador.gridy = 1;//policao da linha (vertical)
+        posicionador.gridx = 0;// posição da coluna (horizontal)
+        pnlDadosReceita.add(lblOrientacao, posicionador);//o add adiciona o rotulo no painel
+
+        txfOrientacao = new JTextField(20);
+        posicionador = new GridBagConstraints();
+        posicionador.gridy = 1;//policao da linha (vertical)
+        posicionador.gridx = 1;// posição da coluna (horizontal)
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
+        pnlDadosReceita.add(txfOrientacao, posicionador);//o add adiciona o rotulo no painel
+
+        btnGravarReceita = new JButton("Adicionar Receita na Consulta");
+        btnGravarReceita.addActionListener(this);
+        btnGravarReceita.setFocusable(true);    //acessibilidade
+        btnGravarReceita.setToolTipText("btnGravarReceita"); //acessibilidade
+        btnGravarReceita.setMnemonic(KeyEvent.VK_G);
+        btnGravarReceita.setActionCommand("botao_gravar_formulario_receita_de_consulta");
+
+        pnlDadosReceita.add(btnGravarReceita);
+
+        tbpAbas.addTab("Receitas", pnlDadosReceita);
+
 
         pnlSul = new JPanel();
         pnlSul.setLayout(new FlowLayout());
@@ -236,6 +313,27 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
         }else if(arg0.getActionCommand().equals(btnCancelar.getActionCommand())){
             pnlAConsulta.showTela("tela_consulta_listagem");
 
+        }else if(arg0.getActionCommand().equals(btnGravarReceita.getActionCommand())){
+            Receita receita = getReceitaDeConsultabyFormulario();
+
+            if(receita != null){
+
+                try {
+
+                    pnlAConsulta.getControle().getConexaoJDBC().persist(receita);
+
+                    JOptionPane.showMessageDialog(this, "Receita de consulta armazenado!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
+
+                    populaTableReceitas();
+                    txfOrientacao.setText("");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar Receita de Consulta! : "+ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 
