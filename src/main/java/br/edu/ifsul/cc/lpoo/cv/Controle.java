@@ -1,6 +1,7 @@
 package br.edu.ifsul.cc.lpoo.cv;
 import br.edu.ifsul.cc.lpoo.cv.gui.consulta.acessibilidade.JPanelAConsulta;
 import br.edu.ifsul.cc.lpoo.cv.gui.funcionario.acessibilidade.JPanelAFuncionario;
+import br.edu.ifsul.cc.lpoo.cv.gui.receita.acessibilidade.JPanelAReceita;
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
@@ -26,6 +27,8 @@ public class Controle {
     private JPanelAFuncionario pnlAFuncionario; // painel de manutencao para funcionario.
 
     private JPanelAConsulta pnlAConsulta;
+
+    private JPanelAReceita pnlAReceita;
     //construtor.
     public Controle(){
 
@@ -64,10 +67,13 @@ public class Controle {
 
         pnlAConsulta = new JPanelAConsulta(this);
 
+        pnlAReceita = new JPanelAReceita(this);
+
         frame.addTela(pnlAutenticacao, "tela_autenticacao");
         frame.addTela(pnlHome, "tela_home");
         frame.addTela(pnlAFuncionario, "tela_funcionario");
         frame.addTela(pnlAConsulta, "tela_consulta");
+        frame.addTela(pnlAReceita, "tela_receita");
 
         frame.showTela("tela_autenticacao"); // apreseta a carta cujo nome é "tela_autenticacao"
 
@@ -126,6 +132,9 @@ public class Controle {
             frame.showTela(nomeTela);
         }else if(nomeTela.equals("tela_consulta")){
             pnlAFuncionario.showTela("tela_consulta_listagem");
+            frame.showTela(nomeTela);
+        }else if(nomeTela.equals("tela_receita")){
+            pnlAFuncionario.showTela("tela_receita_listagem");
             frame.showTela(nomeTela);
         }
 
