@@ -24,7 +24,7 @@ public class TestPersistenciaJDBC {
 
     }
 
-    @Test
+    //@Test
     public void testListPersistenciaConsulta() throws Exception {
         PersistenciaJDBC persistencia = new PersistenciaJDBC();
 
@@ -166,15 +166,15 @@ public class TestPersistenciaJDBC {
 
                 //Receitas da consulta 02
                 Receita receita5 = new Receita();
-                receita5.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
+                receita5.setConsulta(consulta2);
                 receita5.setOrientacao("Anti vermes 01");
                 persistencia.persist(receita5);
                 Receita receita6 = new Receita();
-                receita6.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
+                receita6.setConsulta(consulta2);
                 receita6.setOrientacao("Anti vermes 02");
                 persistencia.persist(receita6);
                 Receita receita7 = new Receita();
-                receita7.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
+                receita7.setConsulta(consulta2);
                 receita7.setOrientacao("Anti vermes 03");
                 persistencia.persist(receita7);
 
@@ -185,6 +185,8 @@ public class TestPersistenciaJDBC {
         persistencia.fecharConexao();
     }
 
+
+    // Testes devem ser executados para dados auxiliares
     @Test
     public void testInsertFuncionario() throws Exception{
         PersistenciaJDBC persistencia = new PersistenciaJDBC();
@@ -370,12 +372,6 @@ public class TestPersistenciaJDBC {
         consulta1.setPet((Pet) persistencia.find(Pet.class, persistencia.ultimoId(Pet.class)));
         persistencia.persist(consulta1);
 
-        //Consulta 02
-        Consulta consulta2 = new Consulta();
-        consulta2.setMedico(medico1);
-        consulta2.setPet(pet1);
-        persistencia.persist(consulta2);
-
         //Receitas da consulta 01
         consulta1.setId(1);
         Receita receita1 = new Receita();
@@ -395,19 +391,6 @@ public class TestPersistenciaJDBC {
         receita4.setOrientacao("Vacina 04");
         persistencia.persist(receita4);
 
-        //Receitas da consulta 02
-        Receita receita5 = new Receita();
-        receita5.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
-        receita5.setOrientacao("Anti vermes 01");
-        persistencia.persist(receita5);
-        Receita receita6 = new Receita();
-        receita6.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
-        receita6.setOrientacao("Anti vermes 02");
-        persistencia.persist(receita6);
-        Receita receita7 = new Receita();
-        receita7.setConsulta((Consulta) persistencia.find(Consulta.class, persistencia.ultimoId(Consulta.class)));
-        receita7.setOrientacao("Anti vermes 03");
-        persistencia.persist(receita7);
     }
 
 }
