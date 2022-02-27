@@ -1,6 +1,7 @@
 package br.edu.ifsul.cc.lpoo.cv.gui.receita.acessibilidade;
 
 import br.edu.ifsul.cc.lpoo.cv.Controle;
+import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Receita;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 import br.edu.ifsul.cc.lpoo.cv.model.Pet;
@@ -28,11 +29,11 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
     private JLabel lblId;
     private JTextField txfId;
 
-    private JLabel lblMedico;
-    private JComboBox cbxMedico;
+    private JLabel lblOrientacao;
+    private JTextField txfOrientacao;
 
-    private JLabel lblPet;
-    private JComboBox cbxPet;
+    private JLabel lblConsulta;
+    private JComboBox cbxConsulta;
 
 
     private SimpleDateFormat format;
@@ -55,55 +56,36 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
 
     }
 
-    public void populaComboMedico(){
+    public void populaComboConsulta(){
 
-        cbxMedico.removeAllItems();
+        cbxConsulta.removeAllItems();
 
-        DefaultComboBoxModel model =  (DefaultComboBoxModel) cbxMedico.getModel();
+        DefaultComboBoxModel model =  (DefaultComboBoxModel) cbxConsulta.getModel();
 
         model.addElement("Selecione");
         try {
 
-            List<Medico> listMedicos = controle.getConexaoJDBC().listMedicos();
-            for(Medico m : listMedicos){
-                model.addElement(m);
+            List<Consulta> listConsultas = controle.getConexaoJDBC().listPesistenciaConsulta();
+            for(Consulta c : listConsultas){
+                model.addElement(c);
             }
 
         } catch (Exception ex) {
 
-            JOptionPane.showMessageDialog(this, "Erro ao listar Medicos -:"+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao listar Consultas -:"+ex.getLocalizedMessage(), "Consultas", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
 
 
     }
 
-    public void populaComboPet(){
-
-        cbxPet.removeAllItems();//zera o combo
-
-        DefaultComboBoxModel model =  (DefaultComboBoxModel) cbxPet.getModel();
-
-        model.addElement("Selecione"); //primeiro item
-        try {
-
-            List<Pet> listPets = controle.getConexaoJDBC().listPets();
-            for(Pet p : listPets){
-                model.addElement(p);
-            }
-
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this, "Erro ao listar Pets -:"+ex.getLocalizedMessage(), "Pets", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        }
-
-
-    }
 
     private Receita getReceitabyFormulario() {
         Receita c = new Receita();
-
+        if(!txfId.getText().equals(""))
+            c.setId(Integer.valueOf(txfId.getText()));
+        c.setOrientacao(txfOrientacao.getText());
+        c.setConsulta((Consulta) cbxConsulta.getSelectedItem());
 
         return c;
     }
@@ -111,14 +93,17 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
     public void setReceitaFormulario(Receita c) {
         if(c == null){//se o parametro estiver nullo, limpa o formulario
             txfId.setText("");
-            cbxMedico.setSelectedIndex(0);
-            cbxPet.setSelectedIndex(0);
+            cbxConsulta.setSelectedIndex(0);
+            txfOrientacao.setText("");
 
             receitaM = null;
         }else{
             receitaM = c;
             txfId.setEditable(false);
             txfId.setText(String.valueOf(receitaM.getId()));
+            txfOrientacao.setText(c.getOrientacao());
+            cbxConsulta.getModel().setSelectedItem(receitaM.getConsulta());
+
 
         }
     }
@@ -149,33 +134,32 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
         pnlDadosReceitas.add(txfId, posicionador);//o add adiciona o rotulo no painel
 
-        lblMedico = new JLabel("Medico:");
+        lblOrientacao = new JLabel("Orientação:");
         posicionador = new GridBagConstraints();
         posicionador.gridy = 1;//policao da linha (vertical)
         posicionador.gridx = 0;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosReceitas.add(lblMedico, posicionador);//o add adiciona o rotulo no painel
+        pnlDadosReceitas.add(lblOrientacao, posicionador);//o add adiciona o rotulo no painel
 
-        cbxMedico = new JComboBox();
+        txfOrientacao = new JTextField(20);
         posicionador = new GridBagConstraints();
         posicionador.gridy = 1;//policao da linha (vertical)
         posicionador.gridx = 1;// posição da coluna (horizontal)
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosReceitas.add(cbxMedico, posicionador);//o add adiciona o rotulo no painel
+        pnlDadosReceitas.add(txfOrientacao, posicionador);//o add adiciona o rotulo no painel
 
-        lblPet = new JLabel("Pet:");
+        lblConsulta = new JLabel("Consulta:");
         posicionador = new GridBagConstraints();
         posicionador.gridy = 2;//policao da linha (vertical)
         posicionador.gridx = 0;// posição da coluna (horizontal)
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosReceitas.add(lblPet, posicionador);//o add adiciona o rotulo no painel
+        pnlDadosReceitas.add(lblConsulta, posicionador);//o add adiciona o rotulo no painel
 
-        cbxPet = new JComboBox();
+        cbxConsulta = new JComboBox();
         posicionador = new GridBagConstraints();
         posicionador.gridy = 2;//policao da linha (vertical)
         posicionador.gridx = 1;// posição da coluna (horizontal)
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosReceitas.add(cbxPet, posicionador);//o add adiciona o rotulo no painel
+        pnlDadosReceitas.add(cbxConsulta, posicionador);//o add adiciona o rotulo no painel
 
         tbpAbas.addTab("Receita", pnlDadosReceitas);
 

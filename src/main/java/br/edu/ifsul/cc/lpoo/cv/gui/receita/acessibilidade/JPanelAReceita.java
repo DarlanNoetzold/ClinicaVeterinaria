@@ -40,8 +40,7 @@ public class JPanelAReceita extends JPanel {
             listagem.populaTable();
         }else if(nomeTela.equals("tela_receita_formulario")){
 
-            getFormulario().populaComboMedico();
-            getFormulario().populaComboPet();
+            getFormulario().populaComboConsulta();
         }
         cardLayout.show(this, nomeTela);
     }
