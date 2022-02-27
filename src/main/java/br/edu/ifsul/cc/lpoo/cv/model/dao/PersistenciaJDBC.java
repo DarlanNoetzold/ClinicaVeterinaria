@@ -739,7 +739,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         return lista;
     }
 
-    public List<Medico> listMedico() throws SQLException {
+    public List<Medico> listMedicos() throws SQLException {
         List<Medico> lista = null;
 
         PreparedStatement ps = this.con.prepareStatement("select data_cadastro_medico, numero_crmv, cpf from tb_medico");
@@ -760,7 +760,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         return lista;
     }
 
-    public List<Pet> listPet() throws Exception {
+    public List<Pet> listPets() throws Exception {
         List<Pet> lista = null;
 
         PreparedStatement ps = this.con.prepareStatement("select id, data_nascimento, nome, observacao, cliente_id, raca_id from tb_pet");
@@ -780,6 +780,25 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             p.setRaca((Raca) find(Raca.class, rs.getInt("raca_id")));
 
             lista.add(p);
+        }
+        return lista;
+    }
+
+    public List<Receita> listReceitas() throws Exception {
+        List<Receita> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("select id, orientacao, consulta_id from tb_receita");
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList<>();
+        while (rs.next()) {
+            Receita r = new Receita();
+            r.setId(rs.getInt("id"));
+            r.setOrientacao(rs.getString("orientacao"));
+            r.setConsulta((Consulta) find(Consulta.class, rs.getInt("consulta_id")));
+
+            lista.add(r);
         }
         return lista;
     }
