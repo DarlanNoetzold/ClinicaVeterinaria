@@ -27,7 +27,6 @@ public class JPanelAConsulta extends JPanel {
 
         formulario = new JPanelAConsultaFormulario(this, controle);
         listagem = new JPanelAConsultaListagem(this, controle);
-        
         this.add(formulario, "tela_consulta_formulario");
         this.add(listagem, "tela_consulta_listagem");
         listagem.populaTable();
