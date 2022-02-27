@@ -91,20 +91,17 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
     }
 
     public void setReceitaFormulario(Receita c) {
-        if(c == null){//se o parametro estiver nullo, limpa o formulario
+        if (c == null) {
             txfId.setText("");
             cbxConsulta.setSelectedIndex(0);
             txfOrientacao.setText("");
-
             receitaM = null;
-        }else{
+        } else {
             receitaM = c;
             txfId.setEditable(false);
             txfId.setText(String.valueOf(receitaM.getId()));
             txfOrientacao.setText(c.getOrientacao());
             cbxConsulta.getModel().setSelectedItem(receitaM.getConsulta());
-
-
         }
     }
 
@@ -218,8 +215,5 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
 
         }
     }
-
-
-
 
 }
