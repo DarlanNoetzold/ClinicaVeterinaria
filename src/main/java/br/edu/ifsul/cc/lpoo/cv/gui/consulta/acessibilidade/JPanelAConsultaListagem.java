@@ -4,6 +4,7 @@ package br.edu.ifsul.cc.lpoo.cv.gui.consulta.acessibilidade;
 import br.edu.ifsul.cc.lpoo.cv.Controle;
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
+import br.edu.ifsul.cc.lpoo.cv.model.Receita;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -38,7 +39,7 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
     
     
     public JPanelAConsultaListagem(JPanelAConsulta pnlAConsulta, Controle controle){
-        
+
         this.pnlAConsulta = pnlAConsulta;
         this.controle = controle;
         
@@ -62,7 +63,9 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         }
 
     }
-    
+
+
+
     private void initComponents(){
         
         borderLayout = new BorderLayout();
@@ -160,6 +163,7 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
 
                 pnlAConsulta.showTela("tela_consulta_formulario");
                 pnlAConsulta.getFormulario().setConsultaFormulario(c);
+                pnlAConsulta.getFormulario().populaTableReceitas();
             }else{
                 JOptionPane.showMessageDialog(this, "Selecione uma linha para editar!", "Edição", JOptionPane.INFORMATION_MESSAGE);
             }
