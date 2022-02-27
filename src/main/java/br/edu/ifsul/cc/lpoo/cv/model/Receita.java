@@ -60,4 +60,8 @@ public class Receita implements Serializable {
         this.produtos = produtos;
     }
 
+    @Override
+    public String toString() {
+        return getId().toString();
+    }
 }
