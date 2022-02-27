@@ -36,7 +36,6 @@ public class JPanelAReceita extends JPanel {
 
     public void showTela(String nomeTela){
         if(nomeTela.equals("tela_receita_listagem")){
-            System.out.println("testeeee");
             listagem.populaTable();
         }else if(nomeTela.equals("tela_receita_formulario")){
 
