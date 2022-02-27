@@ -131,10 +131,10 @@ public class Controle {
             pnlAFuncionario.showTela("tela_funcionario_listagem");
             frame.showTela(nomeTela);
         }else if(nomeTela.equals("tela_consulta")){
-            pnlAFuncionario.showTela("tela_consulta_listagem");
+            pnlAConsulta.showTela("tela_consulta_listagem");
             frame.showTela(nomeTela);
         }else if(nomeTela.equals("tela_receita")){
-            pnlAFuncionario.showTela("tela_receita_listagem");
+            pnlAReceita.showTela("tela_receita_listagem");
             frame.showTela(nomeTela);
         }
 
