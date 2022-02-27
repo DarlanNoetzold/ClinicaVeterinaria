@@ -1,7 +1,6 @@
 package br.edu.ifsul.cc.lpoo.cv.gui.consulta.acessibilidade;
 
 import br.edu.ifsul.cc.lpoo.cv.Controle;
-import br.edu.ifsul.cc.lpoo.cv.model.Cargo;
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 import br.edu.ifsul.cc.lpoo.cv.model.Pet;
@@ -65,7 +64,7 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
         model.addElement("Selecione");
         try {
 
-            List<Medico> listMedicos = controle.getConexaoJDBC().listMedico();
+            List<Medico> listMedicos = controle.getConexaoJDBC().listMedicos();
             for(Medico m : listMedicos){
                 model.addElement(m);
             }
@@ -88,7 +87,7 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
         model.addElement("Selecione"); //primeiro item
         try {
 
-            List<Pet> listPets = controle.getConexaoJDBC().listPet();
+            List<Pet> listPets = controle.getConexaoJDBC().listPets();
             for(Pet p : listPets){
                 model.addElement(p);
             }
