@@ -23,9 +23,9 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
     
     private BorderLayout borderLayout;
     private JPanel pnlNorte;
-    private JLabel lblFiltro;
-    private JTextField txfFiltro;
-    private JButton btnFiltro;
+    private JLabel lblFiltroConsulta;
+    private JTextField txfFiltroConsulta;
+    private JButton btnFiltroConsulta;
     
     private JPanel pnlCentro;
     private JScrollPane scpListagem;
@@ -54,7 +54,11 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         try {
             List<Consulta> listConsultas = controle.getConexaoJDBC().listPesistenciaConsulta();
             for(Consulta c : listConsultas){
-                model.addRow(new Object[]{c,c.getMedico().getCpf(), c.getPet().getNome()});
+                if(txfFiltroConsulta.getText().equals("")){
+                    model.addRow(new Object[]{c, c.getMedico().getCpf(), c.getPet().getNome()});
+                }else if(txfFiltroConsulta.getText().equals(String.valueOf(c.getId()))) {
+                    model.addRow(new Object[]{c, c.getMedico().getCpf(), c.getPet().getNome()});
+                }
             }
 
         } catch (Exception ex) {
@@ -74,18 +78,18 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
         pnlNorte = new JPanel();
         pnlNorte.setLayout(new FlowLayout());
         
-        lblFiltro = new JLabel("Filtrar por Id:");
-        pnlNorte.add(lblFiltro);
+        lblFiltroConsulta = new JLabel("Filtrar por Id:");
+        pnlNorte.add(lblFiltroConsulta);
         
-        txfFiltro = new JTextField(20);
-        pnlNorte.add(txfFiltro);
+        txfFiltroConsulta = new JTextField(20);
+        pnlNorte.add(txfFiltroConsulta);
         
-        btnFiltro = new JButton("Filtrar");
-        btnFiltro.addActionListener(this);
-        btnFiltro.setFocusable(true);    //acessibilidade    
-        btnFiltro.setToolTipText("btnFiltrar"); //acessibilidade  
-        btnFiltro.setActionCommand("botao_filtro");
-        pnlNorte.add(btnFiltro);
+        btnFiltroConsulta = new JButton("Filtrar");
+        btnFiltroConsulta.addActionListener(this);
+        btnFiltroConsulta.setFocusable(true);    //acessibilidade
+        btnFiltroConsulta.setToolTipText("btnFiltrar"); //acessibilidade
+        btnFiltroConsulta.setActionCommand("botao_filtro");
+        pnlNorte.add(btnFiltroConsulta);
         
         this.add(pnlNorte, BorderLayout.NORTH);//adiciona o painel na posicao norte.
         
@@ -95,15 +99,19 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
             
         scpListagem = new JScrollPane();
         tblListagem =  new JTable();
-        
+
         modeloTabela = new DefaultTableModel(
             new String [] {
                 "Id", "CPF Médico", "Nome do Pet"
-            }, 0);
-        
+            }, 0){
+            public boolean isCellEditable(int linha, int coluna) {
+                return false;
+            }
+        };
+
         tblListagem.setModel(modeloTabela);
         scpListagem.setViewportView(tblListagem);
-    
+
         pnlCentro.add(scpListagem, BorderLayout.CENTER);
     
         
@@ -191,6 +199,8 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
                 JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
             }
             
+        }else if(arg0.getActionCommand().equals(btnFiltroConsulta.getActionCommand())){
+            populaTable();
         }
     
     
