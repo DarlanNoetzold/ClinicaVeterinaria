@@ -22,9 +22,9 @@ public class JPanelAReceitaListagem extends JPanel implements ActionListener{
 
     private BorderLayout borderLayout;
     private JPanel pnlNorte;
-    private JLabel lblFiltro;
-    private JTextField txfFiltro;
-    private JButton btnFiltro;
+    private JLabel lblFiltroReceita;
+    private JTextField txfFiltroReceita;
+    private JButton btnFiltroReceita;
 
     private JPanel pnlCentro;
     private JScrollPane scpListagem;
@@ -53,7 +53,11 @@ public class JPanelAReceitaListagem extends JPanel implements ActionListener{
         try {
             List<Receita> listReceitas = controle.getConexaoJDBC().listReceitas();
             for(Receita r : listReceitas){
-                model.addRow(new Object[]{r, r.getOrientacao(), r.getConsulta().getId()});
+                if(txfFiltroReceita.getText().equals("")){
+                    model.addRow(new Object[]{r, r.getOrientacao(), r.getConsulta().getId()});
+                }else if(txfFiltroReceita.getText().equals(String.valueOf(r.getId()))){
+                    model.addRow(new Object[]{r, r.getOrientacao(), r.getConsulta().getId()});
+                }
             }
 
         } catch (Exception ex) {
@@ -71,18 +75,18 @@ public class JPanelAReceitaListagem extends JPanel implements ActionListener{
         pnlNorte = new JPanel();
         pnlNorte.setLayout(new FlowLayout());
 
-        lblFiltro = new JLabel("Filtrar por Id:");
-        pnlNorte.add(lblFiltro);
+        lblFiltroReceita = new JLabel("Filtrar por Id:");
+        pnlNorte.add(lblFiltroReceita);
 
-        txfFiltro = new JTextField(20);
-        pnlNorte.add(txfFiltro);
+        txfFiltroReceita = new JTextField(20);
+        pnlNorte.add(txfFiltroReceita);
 
-        btnFiltro = new JButton("Filtrar");
-        btnFiltro.addActionListener(this);
-        btnFiltro.setFocusable(true);    //acessibilidade    
-        btnFiltro.setToolTipText("btnFiltrar"); //acessibilidade  
-        btnFiltro.setActionCommand("botao_filtro");
-        pnlNorte.add(btnFiltro);
+        btnFiltroReceita = new JButton("Filtrar");
+        btnFiltroReceita.addActionListener(this);
+        btnFiltroReceita.setFocusable(true);    //acessibilidade
+        btnFiltroReceita.setToolTipText("btnFiltrar"); //acessibilidade
+        btnFiltroReceita.setActionCommand("botao_filtro");
+        pnlNorte.add(btnFiltroReceita);
 
         this.add(pnlNorte, BorderLayout.NORTH);//adiciona o painel na posicao norte.
 
@@ -96,7 +100,11 @@ public class JPanelAReceitaListagem extends JPanel implements ActionListener{
         modeloTabela = new DefaultTableModel(
                 new String [] {
                         "Id", "Orietação", "Consulta Id"
-                }, 0);
+                }, 0){
+            public boolean isCellEditable(int linha, int coluna) {
+                return false;
+            }
+        };
 
         tblListagem.setModel(modeloTabela);
         scpListagem.setViewportView(tblListagem);
@@ -187,6 +195,8 @@ public class JPanelAReceitaListagem extends JPanel implements ActionListener{
                 JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
             }
 
+        }else if(arg0.getActionCommand().equals(btnFiltroReceita.getActionCommand())){
+            populaTable();
         }
 
 

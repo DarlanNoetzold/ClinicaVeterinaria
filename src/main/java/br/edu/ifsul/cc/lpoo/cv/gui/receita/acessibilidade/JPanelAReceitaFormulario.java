@@ -82,12 +82,18 @@ public class JPanelAReceitaFormulario extends JPanel implements ActionListener{
 
     private Receita getReceitabyFormulario() {
         Receita c = new Receita();
-        if(!txfId.getText().equals(""))
-            c.setId(Integer.valueOf(txfId.getText()));
-        c.setOrientacao(txfOrientacao.getText());
-        c.setConsulta((Consulta) cbxConsulta.getSelectedItem());
-
-        return c;
+        if(cbxConsulta.getSelectedItem() != "Selecione" && txfOrientacao.getText().trim().length() > 0) {
+            if (!txfId.getText().equals(""))
+                c.setId(Integer.valueOf(txfId.getText()));
+            c.setOrientacao(txfOrientacao.getText());
+            c.setConsulta((Consulta) cbxConsulta.getSelectedItem());
+            if (c.getConsulta() == null || c.getOrientacao() == null) {
+                return null;
+            }
+            return c;
+        }else{
+            return null;
+        }
     }
 
     public void setReceitaFormulario(Receita c) {
