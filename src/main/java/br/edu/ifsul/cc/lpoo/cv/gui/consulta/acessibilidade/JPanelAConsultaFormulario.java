@@ -142,10 +142,14 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
 
     private Consulta getConsultabyFormulario() {
         Consulta c = new Consulta();
-        if(!txfId.getText().equals(""))
-            c.setId(Integer.valueOf(txfId.getText()));
-        c.setMedico((Medico) cbxMedico.getSelectedItem());
-        c.setPet((Pet) cbxPet.getSelectedItem());
+        if(cbxMedico.getSelectedItem() != "Selecione" && cbxPet.getSelectedItem() != "Selecione") {
+            if (!txfId.getText().equals(""))
+                c.setId(Integer.valueOf(txfId.getText()));
+            c.setMedico((Medico) cbxMedico.getSelectedItem());
+            c.setPet((Pet) cbxPet.getSelectedItem());
+        }else{
+            return null;
+        }
 
         return c;
     }
@@ -315,24 +319,27 @@ public class JPanelAConsultaFormulario extends JPanel implements ActionListener{
 
         }else if(arg0.getActionCommand().equals(btnGravarReceita.getActionCommand())){
             Receita receita = getReceitaDeConsultabyFormulario();
+            if(receita.getConsulta() == null){
+                JOptionPane.showMessageDialog(this, "É preciso primeiro salva a Consulta para depois Editar a consulta e adicionar as Receitas!", "Receita de Consulta", JOptionPane.INFORMATION_MESSAGE);
+            }else {
+                if (receita != null) {
 
-            if(receita != null){
+                    try {
 
-                try {
+                        pnlAConsulta.getControle().getConexaoJDBC().persist(receita);
 
-                    pnlAConsulta.getControle().getConexaoJDBC().persist(receita);
+                        JOptionPane.showMessageDialog(this, "Receita de consulta armazenado!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
 
-                    JOptionPane.showMessageDialog(this, "Receita de consulta armazenado!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
+                        populaTableReceitas();
+                        txfOrientacao.setText("");
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(this, "Erro ao salvar Receita de Consulta! : " + ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                } else {
 
-                    populaTableReceitas();
-                    txfOrientacao.setText("");
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao salvar Receita de Consulta! : "+ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
                 }
-            }else{
-
-                JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
