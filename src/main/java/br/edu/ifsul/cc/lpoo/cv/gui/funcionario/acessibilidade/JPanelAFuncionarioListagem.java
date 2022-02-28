@@ -57,7 +57,11 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
         try {
             List<Funcionario> listFuncionarios = controle.getConexaoJDBC().listFuncionario();
             for(Funcionario f : listFuncionarios){
-                model.addRow(new Object[]{f, f.getCargo(), f.getNumero_ctps(), f.getNumero_pis(), format.format(f.getData_cadastro_Funcionario().getTime())});
+                if(txfFiltro.getText().equals("")){
+                    model.addRow(new Object[]{f, f.getCargo(), f.getNumero_ctps(), f.getNumero_pis(), format.format(f.getData_cadastro_Funcionario().getTime())});
+                }else if(txfFiltro.getText().equals(f.getCpf())){
+                    model.addRow(new Object[]{f, f.getCargo(), f.getNumero_ctps(), f.getNumero_pis(), format.format(f.getData_cadastro_Funcionario().getTime())});
+                }
             }
 
         } catch (Exception ex) {
@@ -101,7 +105,11 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
         modeloTabela = new DefaultTableModel(
             new String [] {
                 "CPF", "Cargo", "Numero CTPS", "Numero PIS", "Data Cadastro"
-            }, 0);
+            }, 0){
+            public boolean isCellEditable(int linha, int coluna) {
+                return false;
+            }
+        };
         
         tblListagem.setModel(modeloTabela);
         scpListagem.setViewportView(tblListagem);
@@ -196,6 +204,8 @@ public class JPanelAFuncionarioListagem extends JPanel implements ActionListener
             }else{
                 JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
             }
+        }else if(arg0.getActionCommand().equals(btnFiltro.getActionCommand())){
+            populaTable();
         }
     }
 }
