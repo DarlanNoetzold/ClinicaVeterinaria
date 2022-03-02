@@ -26,7 +26,6 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
     private BorderLayout borderLayout;
     private JTabbedPane tbpAbas;
     private Funcionario funcionarioM;
-    private Pessoa pessoaM;
     private SimpleDateFormat format;
 
     private JPanel pnlDadosCadastrais;
@@ -59,6 +58,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
     private JTextField txfNumero_ctps;
     private JLabel lblSenha;
     private JPasswordField txfSenha;
+    private Calendar dataCadastroFunc;
 
     private JPanel pnlSul;
     private JButton btnGravar;
@@ -74,7 +74,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
 
     }
 
-    public Funcionario getFuncionariobyFormulario() {
+    public Funcionario getFuncionariobyFormulario() throws ParseException {
 
         //validacao do formulario
         if (txfCpf.getText().trim().length() > 4 &&
@@ -85,41 +85,22 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             funcionario.setCargo((Cargo) txfCargo.getSelectedItem());
             funcionario.setNumero_pis(txfNumero_pis.getText());
             funcionario.setNumero_ctps(txfNumero_ctps.getText());
-            funcionario.setData_cadastro_Funcionario(Calendar.getInstance());
             funcionario.setCpf(txfCpf.getText());
-
-            return funcionario;
-        }
-
-        return null;
-    }
-
-    private Pessoa getPessoabyFormulario() throws ParseException {
-        //validacao do formulario
-        if (txfCpf.getText().trim().length() > 4 &&
-                new String(txfSenha.getPassword()).trim().length() > 3) {
-            Pessoa pessoa = new Pessoa();
-
-            pessoa.setCpf(txfCpf.getText());
-            pessoa.setSenha(String.valueOf(txfSenha.getPassword()));
-            pessoa.setRg(txfRg.getText());
-            pessoa.setEndereco(txfEndereco.getText());
-            pessoa.setEmail(txfEmail.getText());
-            pessoa.setNumero_celular(txfNumero_celular.getText());
-            pessoa.setNome(txfNome.getText());
-            pessoa.setComplemento(txfComplemento.getText());
-            pessoa.setData_cadastro(Calendar.getInstance());
+            funcionario.setSenha(String.valueOf(txfSenha.getPassword()));
+            funcionario.setRg(txfRg.getText());
+            funcionario.setEndereco(txfEndereco.getText());
+            funcionario.setEmail(txfEmail.getText());
+            funcionario.setNumero_celular(txfNumero_celular.getText());
+            funcionario.setNome(txfNome.getText());
+            funcionario.setComplemento(txfComplemento.getText());
             Calendar c = Calendar.getInstance();
             c.setTime(format.parse(txfData_nascimento.getText()));
-            pessoa.setData_nascimento(c);
-            pessoa.setCep(txfCep.getText());
-            pessoa.setTipo("F");
+            funcionario.setData_nascimento(c);
+            funcionario.setCep(txfCep.getText());
+            funcionario.setTipo("F");
+            funcionario.setData_cadastro(dataCadastroFunc);
 
-            if (funcionarioM != null)
-                pessoa.setData_cadastro(funcionarioM.getData_cadastro());
-
-
-            return pessoa;
+            return funcionario;
         }
 
         return null;
@@ -142,29 +123,23 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             txfSenha.setText("");
             txfCpf.setEditable(true);
             funcionarioM=null;
-            pessoaM = null;
         }else{
             funcionarioM = funcionario;
-            try {
-                pessoaM = (Pessoa) controle.getConexaoJDBC().find(Pessoa.class, funcionario.getCpf());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             txfCpf.setEditable(false);
-            txfCpf.setText(pessoaM.getCpf());
-            txfRg.setText(pessoaM.getRg());
-            txfCep.setText(pessoaM.getCep());
-            txfComplemento.setText(pessoaM.getComplemento());
-            txfEmail.setText(pessoaM.getEmail());
-            txfEndereco.setText(pessoaM.getEndereco());
-            txfNome.setText(pessoaM.getNome());
-            txfNumero_celular.setText(pessoaM.getNumero_celular());
-            txfData_nascimento.setText(format.format(pessoaM.getData_nascimento().getTime()));
+            txfCpf.setText(funcionarioM.getCpf());
+            txfRg.setText(funcionarioM.getRg());
+            txfCep.setText(funcionarioM.getCep());
+            txfComplemento.setText(funcionarioM.getComplemento());
+            txfEmail.setText(funcionarioM.getEmail());
+            txfEndereco.setText(funcionarioM.getEndereco());
+            txfNome.setText(funcionarioM.getNome());
+            txfNumero_celular.setText(funcionarioM.getNumero_celular());
+            txfData_nascimento.setText(format.format(funcionarioM.getData_nascimento().getTime()));
             txfCargo.getModel().setSelectedItem(funcionarioM.getCargo());
             txfNumero_pis.setText(funcionarioM.getNumero_pis());
             txfNumero_ctps.setText(funcionarioM.getNumero_ctps());
-            txfSenha.setText(pessoaM.getSenha());
-
+            txfSenha.setText(funcionarioM.getSenha());
+            dataCadastroFunc = funcionarioM.getData_cadastro();
         }
     }
 
@@ -372,20 +347,18 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
     public void actionPerformed(ActionEvent arg0) {
 
         if (arg0.getActionCommand().equals(btnGravar.getActionCommand())) {
-            Funcionario f = getFuncionariobyFormulario();
-            Pessoa p = null;
+            Funcionario f = null;
             try {
-                p = getPessoabyFormulario();
+                f = getFuncionariobyFormulario();
             } catch (ParseException ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao salvar Funcionario! : " + ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
 
-            if (p != null && f != null) {
+            if (f != null) {
 
                 try {
 
-                    pnlAFuncionario.getControle().getConexaoJDBC().persist(p);
                     pnlAFuncionario.getControle().getConexaoJDBC().persist(f);
 
                     JOptionPane.showMessageDialog(this, "Funcionario e Pessoa armazenados!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
@@ -400,7 +373,6 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
 
                 JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
             }
-
 
         } else if (arg0.getActionCommand().equals(btnCancelar.getActionCommand())) {
 
