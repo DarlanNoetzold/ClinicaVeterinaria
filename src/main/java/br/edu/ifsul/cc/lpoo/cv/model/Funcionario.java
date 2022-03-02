@@ -19,10 +19,6 @@ public class Funcionario extends Pessoa implements Serializable {
     @Enumerated(EnumType.STRING)
     private Cargo cargo;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Calendar data_cadastro_Funcionario;
-
     public Funcionario() {
     }
 
@@ -50,13 +46,6 @@ public class Funcionario extends Pessoa implements Serializable {
         this.cargo = cargo;
     }
 
-    public Calendar getData_cadastro_Funcionario() {
-        return data_cadastro_Funcionario;
-    }
-
-    public void setData_cadastro_Funcionario(Calendar data_cadastro_Funcionario) {
-        this.data_cadastro_Funcionario = data_cadastro_Funcionario;
-    }
 
     @Override
     public String toString() {
