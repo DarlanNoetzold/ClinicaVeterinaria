@@ -98,7 +98,9 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             funcionario.setData_nascimento(c);
             funcionario.setCep(txfCep.getText());
             funcionario.setTipo("F");
-            funcionario.setData_cadastro(dataCadastroFunc);
+            if (dataCadastroFunc != null){
+                funcionario.setData_cadastro(dataCadastroFunc);
+            }
 
             return funcionario;
         }
@@ -121,6 +123,7 @@ public class JPanelAJFuncionarioFormulario extends JPanel implements ActionListe
             txfNumero_pis.setText("");
             txfNumero_ctps.setText("");
             txfSenha.setText("");
+            dataCadastroFunc = null;
             txfCpf.setEditable(true);
             funcionarioM=null;
         }else{
