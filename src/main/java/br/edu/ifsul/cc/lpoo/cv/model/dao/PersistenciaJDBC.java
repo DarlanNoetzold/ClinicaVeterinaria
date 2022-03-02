@@ -349,11 +349,32 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         }else if (o instanceof Funcionario) {
             Funcionario c = (Funcionario) o;
 
-            if (c.getData_cadastro_Funcionario() == null) {
+            if (c.getData_cadastro() == null) {
+                System.out.println("Iniciando Insert de Pessoa...");
+                PreparedStatement ps = this.con.prepareStatement("insert into tb_pessoa "
+                        + "(data_cadastro, tipo, cpf, cep, complemento, data_nascimento, email, endereco, nome, numero_celular, rg, senha) values "
+                        + "(now(),?,?,?,?,?,?,?,?,?,?,?)");
+
+                ps.setString(1, c.getTipo());
+                ps.setString(2, c.getCpf());
+                ps.setString(3, c.getCep());
+                ps.setString(4, c.getComplemento());
+                Date dtU = new Date(System.currentTimeMillis());
+                dtU.setTime(c.getData_nascimento().getTimeInMillis());
+                ps.setDate(5, dtU);
+                ps.setString(6, c.getEmail());
+                ps.setString(7, c.getEndereco());
+                ps.setString(8, c.getNome());
+                ps.setString(9, c.getNumero_celular());
+                ps.setString(10, c.getRg());
+                ps.setString(11, c.getSenha());
+
+                ps.executeUpdate();
+
                 System.out.println("Iniciando Insert de Funcionario...");
-                PreparedStatement ps = this.con.prepareStatement("insert into tb_funcionario "
-                        + "(cargo,numero_ctps, numero_pis, cpf, data_cadastro_funcionario) values "
-                        + "(?,?,?,?, now())");
+                ps = this.con.prepareStatement("insert into tb_funcionario "
+                        + "(cargo,numero_ctps, numero_pis, cpf) values "
+                        + "(?,?,?,?)");
                 ps.setString(1, c.getCargo().toString());
                 ps.setString(2, c.getNumero_ctps());
                 ps.setString(3, c.getNumero_pis());
@@ -361,8 +382,37 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 ps.executeUpdate();
             } else {
+                System.out.println("Inciando Update de Pessoa...");
+                PreparedStatement ps = this.con.prepareStatement("update tb_pessoa set "
+                        + "tipo = ?, "
+                        + "cep = ?, "
+                        + "complemento = ?, "
+                        + "data_nascimento = ?, "
+                        + "email = ?, "
+                        + "endereco = ?, "
+                        + "nome = ?, "
+                        + "numero_celular = ?, "
+                        + "rg = ?, "
+                        + "senha = ?, "
+                        + "data_cadastro = now()"
+                        + "where cpf = ?");
+                ps.setString(1, c.getTipo());
+                ps.setString(2, c.getCep());
+                ps.setString(3, c.getComplemento());
+                Date dtU = new Date(System.currentTimeMillis());
+                dtU.setTime(c.getData_nascimento().getTimeInMillis());
+                ps.setDate(4, dtU);
+                ps.setString(5, c.getEmail());
+                ps.setString(6, c.getEndereco());
+                ps.setString(7, c.getNome());
+                ps.setString(8, c.getNumero_celular());
+                ps.setString(9, c.getRg());
+                ps.setString(10, c.getSenha());
+                ps.setString(11, c.getCpf());
+                ps.execute();
+
                 System.out.println("Iniciando Update de Funcionario...");
-                PreparedStatement ps = this.con.prepareStatement("update tb_funcionario set "
+                ps = this.con.prepareStatement("update tb_funcionario set "
                         + "cargo = ?, "
                         + "numero_ctps = ?, "
                         + "numero_pis = ? "
@@ -719,8 +769,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     public List<Funcionario> listFuncionario() throws SQLException {
         List<Funcionario> lista = null;
 
-        PreparedStatement ps = this.con.prepareStatement("select cargo, numero_ctps, numero_pis, cpf, data_cadastro_funcionario from tb_funcionario");
-
+        PreparedStatement ps = this.con.prepareStatement("select cargo, numero_ctps, numero_pis, cpf from tb_funcionario");
         ResultSet rs = ps.executeQuery();
 
         lista = new ArrayList<>();
@@ -730,12 +779,33 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             func.setCargo(Cargo.valueOf(rs.getString("cargo").toUpperCase()));
             func.setNumero_ctps(rs.getString("numero_ctps"));
             func.setNumero_pis(rs.getString("numero_pis"));
-            Calendar dtU = Calendar.getInstance();
-            dtU.setTimeInMillis(rs.getDate("data_cadastro_funcionario").getTime());
-            func.setData_cadastro_Funcionario(dtU);
 
+            PreparedStatement psPessoa = this.con.prepareStatement("select rg, nome, senha, numero_celular, email, data_cadastro, data_nascimento, cep, endereco, complemento from tb_pessoa where cpf = ?");
+
+            psPessoa.setString(1, func.getCpf());
+            ResultSet rsPessoa = psPessoa.executeQuery();
+
+            if (rsPessoa.next()) {
+                func.setRg(rsPessoa.getString("rg"));
+                func.setNome(rsPessoa.getString("nome"));
+                func.setSenha(rsPessoa.getString("senha"));
+                func.setNumero_celular(rsPessoa.getString("numero_celular"));
+                func.setEmail(rsPessoa.getString("email"));
+                Calendar dc = Calendar.getInstance();
+                dc.setTimeInMillis(rsPessoa.getDate("data_cadastro").getTime());
+                func.setData_cadastro(dc);
+                Calendar dn = Calendar.getInstance();
+                dn.setTimeInMillis(rsPessoa.getDate("data_nascimento").getTime());
+                func.setData_nascimento(dn);
+                func.setCep(rsPessoa.getString("cep"));
+                func.setEndereco(rsPessoa.getString("endereco"));
+                func.setComplemento(rsPessoa.getString("complemento"));
+
+                psPessoa.close();
+            }
             lista.add(func);
         }
+        ps.close();
         return lista;
     }
 
@@ -757,6 +827,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
             lista.add(med);
         }
+        ps.close();
         return lista;
     }
 
@@ -781,6 +852,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
             lista.add(p);
         }
+        ps.close();
         return lista;
     }
 
@@ -800,6 +872,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
             lista.add(r);
         }
+        ps.close();
         return lista;
     }
 }
