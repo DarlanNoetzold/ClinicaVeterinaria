@@ -191,26 +191,22 @@ public class TestPersistenciaJDBC {
     public void testInsertFuncionario() throws Exception{
         PersistenciaJDBC persistencia = new PersistenciaJDBC();
 
-        Pessoa pessoaFunc = new Pessoa();
-        pessoaFunc.setTipo("F");
-        pessoaFunc.setCep("45678912");
-        pessoaFunc.setComplemento("Eh isso ai mesmo");
-        pessoaFunc.setNome("Bruno");
-        pessoaFunc.setCpf("123456");
-        pessoaFunc.setData_nascimento(Calendar.getInstance());
-        pessoaFunc.setEmail("funcionario@mail.com");
-        pessoaFunc.setEndereco("Algum lugar, numero 0, Rua");
-        pessoaFunc.setNumero_celular("5499999999");
-        pessoaFunc.setRg("55555555555");
-        pessoaFunc.setSenha("123456");
-
-        persistencia.persist(pessoaFunc);
-
         Funcionario func = new Funcionario();
+        func.setTipo("F");
+        func.setCep("45678912");
+        func.setComplemento("Eh isso ai mesmo");
+        func.setNome("Bruno");
+        func.setCpf("123456");
+        func.setData_nascimento(Calendar.getInstance());
+        func.setEmail("funcionario@mail.com");
+        func.setEndereco("Algum lugar, numero 0, Rua");
+        func.setNumero_celular("5499999999");
+        func.setRg("55555555555");
+        func.setSenha("123456");
+
         func.setCargo(Cargo.valueOf("ATENDENTE"));
         func.setNumero_ctps("123456789");
         func.setNumero_pis("123456789");
-        func.setCpf(pessoaFunc.getCpf());
 
         persistencia.persist(func);
 
