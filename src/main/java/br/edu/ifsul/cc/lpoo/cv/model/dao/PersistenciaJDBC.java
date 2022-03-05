@@ -745,7 +745,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         funcionario = new Funcionario();
         if(rsCpf.next()){
             funcionario.setCpf(rsCpf.getString("cpf"));
-            System.out.println(funcionario.getCpf());
         }
         psCpf.close();
 
@@ -758,7 +757,10 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
         if(rsSenha.next()){
             funcionario.setSenha(rsSenha.getString("senha"));
-            System.out.println(funcionario.getSenha());
+        }
+
+        if(funcionario.getSenha() == null && funcionario.getCpf() == null){
+            funcionario = null;
         }
 
         psSenha.close();

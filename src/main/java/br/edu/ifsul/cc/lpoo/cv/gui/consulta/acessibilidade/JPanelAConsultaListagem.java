@@ -186,7 +186,11 @@ public class JPanelAConsultaListagem extends JPanel implements ActionListener{
                 Consulta c = (Consulta) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
 
                 try {
+                    for (Receita r: c.getReceitas()) {
+                        pnlAConsulta.getControle().getConexaoJDBC().remover(r);
+                    }
                     pnlAConsulta.getControle().getConexaoJDBC().remover(c);
+
                     JOptionPane.showMessageDialog(this, "Consulta removido!", "Jogador", JOptionPane.INFORMATION_MESSAGE);
                     populaTable(); //refresh na tabela
 
